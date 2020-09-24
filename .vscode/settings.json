@@ -1,0 +1,9 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.validate": ["javascript", "vue", { "language": "json", "autoFix": true }],
+    "vetur.validation.template": false,
+    "csscomb.formatOnSave": true,
+    "csscomb.ignoreFilesOnSave": ["**/**/reset.scss"]
+}

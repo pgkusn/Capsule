@@ -1,0 +1,27 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "plugin:vue/recommended",
+        "standard"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "vue",
+        "json-format"
+    ],
+    "rules": {
+        "semi": ["error", "always"],
+        "indent": ["error", 4],
+        "vue/max-attributes-per-line": ["error", {
+            "singleline": 3
+        }],
+        "vue/html-indent": ["error", 4],
+        "brace-style": ["error", "stroustrup"]
+    }
+}

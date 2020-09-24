@@ -1,0 +1,39 @@
+{
+  "name": "lottery",
+  "version": "1.0.0",
+  "private": true,
+  "description": "My ultimate Nuxt.js project",
+  "author": "",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "cross-env NODE_ENV=dev nuxt --port 3030",
+    "generate": "nuxt generate",
+    "generate_prod": "cross-env NODE_ENV=prod nuxt generate",
+    "generate_sit": "cross-env NODE_ENV=sit nuxt generate",
+    "sit": "cross-env NODE_ENV=sit nuxt --port 3030",
+    "start": "nuxt start"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.10.3",
+    "@nuxtjs/device": "^1.2.7",
+    "core-js": "^3.6.5",
+    "cross-env": "^7.0.2",
+    "nuxt": "^2.14.5"
+  },
+  "devDependencies": {
+    "@nuxtjs/google-analytics": "^2.3.0",
+    "@nuxtjs/proxy": "^2.0.1",
+    "eslint": "^7.8.1",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-json-format": "^2.0.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-vue": "^6.2.2",
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^8.0.2"
+  }
+}
