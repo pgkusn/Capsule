@@ -54,11 +54,19 @@ export default {
                     display: 'popup',
                     href: location.href
                 },
-                function (response) {}
+                function (response) {
+                    if (response && !response.error_message) {
+                        alert('Posting completed.');
+                    }
+                    else {
+                        alert('Error while posting.');
+                    }
+                }
             );
         },
         lineShare () {
-            const description = document.querySelector('meta[name=description]').content;
+            const description = document.querySelector('meta[name=description]')
+                .content;
             window.open(
                 'http://line.naver.jp/R/msg/text/?' +
                     description +
