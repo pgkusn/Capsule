@@ -10,7 +10,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex';
-import VueFooter from '@/components/VueFooter/VueFooter';
+import VueFooter from '@/components/VueFooter';
 
 export default {
     name: 'App',
@@ -42,7 +42,6 @@ export default {
 
         this.$nextTick(async () => {
             this.$nuxt.$loading.start();
-            await this.getJsonData();
             await this.preloadImg([this.bgImg]);
             this.setReady();
             this.$nuxt.$loading.finish();
@@ -50,7 +49,7 @@ export default {
     },
     methods: {
         ...mapMutations(['setReady']),
-        ...mapActions(['preloadImg', 'getJsonData']),
+        ...mapActions(['getJsonData', 'preloadImg']),
         mediaSensor (minWidth, deviceType) {
             const resizeWidth = pMatchMedia =>
                 this.$store.commit('updateDevice', { deviceType, value: pMatchMedia.matches });
@@ -75,7 +74,7 @@ body {
 }
 .page-enter-active,
 .page-leave-active {
-    transition: opacity 0.3s;
+    transition: opacity .3s;
 }
 .page-enter,
 .page-leave-active {
@@ -83,7 +82,7 @@ body {
 }
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.5s;
+    transition: opacity .2s;
 }
 .fade-enter,
 .fade-leave-to {
@@ -102,7 +101,7 @@ body {
     min-height: 100vh;
     background: 50% 0 / cover;
     opacity: 0;
-    transition: opacity 0.5s;
+    transition: opacity .5s;
     &.is-ready {
         opacity: 1;
     }

@@ -4,7 +4,7 @@
             頁面不存在
         </h1>
         <h1 v-else>
-            
+            {{ error.message }}
         </h1>
     </div>
 </template>

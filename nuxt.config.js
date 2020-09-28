@@ -1,6 +1,6 @@
 const env = require('dotenv').config({ path: '.env.' + process.env.NODE_ENV }).parsed;
 
-const title = '標題';
+const title = 'lottery';
 const description = '描述';
 
 export default {
@@ -50,7 +50,10 @@ export default {
     /*
      ** Plugins to load before mounting the App
      */
-    plugins: ['~/plugins/axios.js'],
+    plugins: [
+        '~/plugins/axios.js',
+        { src: '~/plugins/js-cookie.js', mode: 'client' }
+    ],
     /*
      ** Nuxt.js dev-modules
      */
@@ -58,7 +61,7 @@ export default {
     /*
      ** Nuxt.js modules
      */
-    modules: ['@nuxtjs/axios', '@nuxtjs/proxy', '@nuxtjs/device'],
+    modules: ['@nuxtjs/axios', '@nuxtjs/proxy', '@nuxtjs/device', ['vue-sweetalert2/nuxt', { confirmButtonText: '好' }]],
     /*
      ** Build configuration
      */
@@ -87,6 +90,7 @@ export default {
         host: '0.0.0.0'
     },
     publicRuntimeConfig: {
+        ENV: process.env.ENV,
         API_URL: process.env.API_URL
     }
 };

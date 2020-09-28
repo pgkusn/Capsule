@@ -18,7 +18,9 @@
     "@nuxtjs/device": "^1.2.7",
     "core-js": "^3.6.5",
     "cross-env": "^7.0.2",
-    "nuxt": "^2.14.5"
+    "js-cookie": "^2.2.1",
+    "nuxt": "^2.14.5",
+    "vue-sweetalert2": "^3.0.8"
   },
   "devDependencies": {
     "@nuxtjs/google-analytics": "^2.3.0",

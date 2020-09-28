@@ -2,3 +2,6 @@ $desktop-width: 1920 !default;
 $content-width: 1200 !default;
 $tablet-width: 768 !default;
 $mobile-width: 414 !default;
+$z-index: (
+    popup: 10
+);
