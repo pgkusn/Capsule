@@ -1,10 +1,6 @@
 <template>
     <main>
-        <a
-            href
-            class="warning-toggler"
-            @click.prevent="setCurrentPopup('Warning')"
-        >活動注意事項</a>
+        <a href class="warning-toggler" @click.prevent="setCurrentPopup('Warning')">活動注意事項</a>
 
         <nav>
             <a href @click.prevent="setCurrentPopup('History')">我的中獎紀錄</a>
@@ -46,48 +42,34 @@ export default {
         ...mapState(['currentPopup', 'history', 'drawRange'])
     },
     watch: {
-        async currentPopup (value) {
-            if (!value) return;
+        async currentPopup (popupType) {
+            if (!popupType) return;
 
             // 活動說明
-            if (value === 'Warning') {
+            if (popupType === 'Warning') {
                 this.showPopup = true;
                 return;
             };
 
             await this.checkLogin().then(() => {
-                // 查詢中獎紀錄
-                if (value === 'History') {
-                    this.$nextTick(async () => {
-                        this.$nuxt.$loading.start();
-                        this.setLoading(true);
+                this.$nextTick(async () => {
+                    this.$nuxt.$loading.start();
+                    this.setLoading(true);
 
+                    if (popupType === 'History') { // 查詢中獎紀錄
                         await this.getHistory();
-                        this.showPopup = true;
-
-                        this.setLoading(false);
-                        this.$nuxt.$loading.finish();
-                    });
-                }
-
-                // 抽獎
-                if (value === 'Draw') {
-                    this.$nextTick(async () => {
-                        this.$nuxt.$loading.start();
-                        this.setLoading(true);
-
+                    }
+                    else if (popupType === 'Draw') { // 抽獎
                         await Promise.all([this.draw(), this.getDrawRange()]);
-                        this.showPopup = true;
+                    }
+                    else if (popupType === 'Share') { // 分享
+                        // TODO: 分享相關邏輯
+                    }
 
-                        this.setLoading(false);
-                        this.$nuxt.$loading.finish();
-                    });
-                }
-
-                // 分享再扭一次
-                if (value === 'Share') {
                     this.showPopup = true;
-                }
+                    this.setLoading(false);
+                    this.$nuxt.$loading.finish();
+                });
             });
         }
     },
@@ -103,11 +85,6 @@ export default {
         ...mapActions(['getHistory', 'getDrawRange', 'share', 'draw']),
         checkLogin () {
             return new Promise((resolve, reject) => {
-                // dev環境下直接設置cookie
-                // if (this.$config.ENV === 'dev') {
-                //     this.$Cookies.set('_user_token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6MTkwODIyfQ.eyJpZGVudGl0eSI6eyJvYmplY3RJZCI6InZ4SlNBNHZYakIiLCJtZW1iZXJfaWQiOiJrZEdWUDQiLCJzb3VyY2UiOiJ2aWRvbCIsImVtYWlsVmVyaWZpZWQiOmZhbHNlfSwiaXNzIjoidmlkb2wudHYiLCJpYXQiOjE2MDAzMDA4NzAsImV4cCI6MTYwMDkwNTY3MH0.5ZLvoYYxJlh_W-g2OjW9aUD-aLZ72kA0B8oSJRQ8MAfeohr6MszshoK8AZwwSMOUXnGtZXHr814ggVUlGQ9jRg');
-                // }
-
                 const userToken = this.$Cookies.get('_user_token');
                 if (!userToken) {
                     localStorage.setItem('currentPopup', this.currentPopup);
@@ -129,12 +106,10 @@ export default {
                 confirmButtonText: '立即登入'
             });
             if (result.isConfirmed) {
-                // dev環境下直接設置cookie
+                // 模擬登入
                 if (this.$config.ENV === 'dev') {
                     location.href = this.$config.API_URL;
-                    if (this.$config.ENV === 'dev') {
-                        this.$Cookies.set('_user_token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6MTkwODIyfQ.eyJpZGVudGl0eSI6eyJvYmplY3RJZCI6InZ4SlNBNHZYakIiLCJtZW1iZXJfaWQiOiJrZEdWUDQiLCJzb3VyY2UiOiJ2aWRvbCIsImVtYWlsVmVyaWZpZWQiOmZhbHNlfSwiaXNzIjoidmlkb2wudHYiLCJpYXQiOjE2MDAzMDA4NzAsImV4cCI6MTYwMDkwNTY3MH0.5ZLvoYYxJlh_W-g2OjW9aUD-aLZ72kA0B8oSJRQ8MAfeohr6MszshoK8AZwwSMOUXnGtZXHr814ggVUlGQ9jRg');
-                    }
+                    this.$Cookies.set('_user_token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6MTkwODIyfQ.eyJpZGVudGl0eSI6eyJvYmplY3RJZCI6InZ4SlNBNHZYakIiLCJtZW1iZXJfaWQiOiJrZEdWUDQiLCJzb3VyY2UiOiJ2aWRvbCIsImVtYWlsVmVyaWZpZWQiOmZhbHNlfSwiaXNzIjoidmlkb2wudHYiLCJpYXQiOjE2MDAzMDA4NzAsImV4cCI6MTYwMDkwNTY3MH0.5ZLvoYYxJlh_W-g2OjW9aUD-aLZ72kA0B8oSJRQ8MAfeohr6MszshoK8AZwwSMOUXnGtZXHr814ggVUlGQ9jRg');
                     return;
                 }
 
