@@ -1,17 +1,25 @@
 <template>
-    <div class="result">
-        <div v-if="jsonData" class="result__content">
-            <div v-if="win" class="result__win">
+    <div class="draw">
+        <div v-if="drawResult && drawRange" class="draw__content">
+            <div v-if="drawRange.draw">
+                <p>今天抽過了</p>
+                <button @click="setCurrentPopup('Share')">
+                    再去扭一次
+                </button>
+            </div>
+            <div v-else-if="drawResult.status === 'win'">
                 <p>恭喜中獎 🎉</p>
-                <button @click="setCurrentPopup('Record')">
+                <button @click="setCurrentPopup('History')">
                     查看中獎記錄
                 </button>
             </div>
-            <div v-else class="result__lose">
+            <div v-else-if="drawResult.status === 'lose'">
                 <p>銘謝惠顧 😢</p>
-                <button @click="setCurrentPopup('Share')">
-                    分享再扭一次
-                </button>
+                <a href="">追劇去</a>
+            </div>
+            <div v-else>
+                <p>Vidol 超狂限定優惠</p>
+                <a href="">領優惠</a>
             </div>
         </div>
         <div v-else>
@@ -24,19 +32,9 @@
 import { mapState, mapMutations } from 'vuex';
 
 export default {
-    name: 'Result',
-    data () {
-        return {
-            win: null
-        };
-    },
+    name: 'Draw',
     computed: {
-        ...mapState(['jsonData'])
-    },
-    mounted () {
-        const result = Math.random() > 0.5;
-        this.win = result;
-        console.log(`win: ${this.win}`);
+        ...mapState(['drawResult', 'drawRange'])
     },
     methods: {
         ...mapMutations(['setCurrentPopup'])
@@ -45,7 +43,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.result {
+.draw {
     display: flex;
     padding: 2rem;
     width: 100%;

@@ -31,6 +31,7 @@ export default {
                     oauth: true
                 });
                 FB.AppEvents.logPageView();
+                // FB.logout(); // FB share test
             };
             (function (d, s, id) {
                 var js;
@@ -58,6 +59,18 @@ export default {
                 res => {
                     if (res && !res.error_message) {
                         this.setCurrentPopup('Result');
+
+                        // get FB userID
+                        FB.getLoginStatus(res => {
+                            if (res.status !== 'connected') {
+                                FB.login(res => {
+                                    console.log(res.authResponse.userID);
+                                });
+                            }
+                            else {
+                                console.log(res.authResponse.userID);
+                            }
+                        });
                     }
                     else {
                         console.log('Error while posting.');

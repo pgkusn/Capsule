@@ -1,8 +1,8 @@
 <template>
-    <div class="record">
-        <div v-if="jsonData" class="record__content">
+    <div class="history">
+        <div v-if="history" class="history__content">
             <h1>我的中獎紀錄</h1>
-            <p>中獎紀錄</p>
+            <p>{{ history.text }}</p>
         </div>
         <div v-else>
             loading..
@@ -14,15 +14,15 @@
 import { mapState } from 'vuex';
 
 export default {
-    name: 'Record',
+    name: 'History',
     computed: {
-        ...mapState(['jsonData'])
+        ...mapState(['history'])
     }
 };
 </script>
 
 <style lang="scss" scoped>
-.record {
+.history {
     display: flex;
     padding: 2rem;
     width: 100%;

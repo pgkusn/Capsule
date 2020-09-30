@@ -7,8 +7,8 @@
         >活動注意事項</a>
 
         <nav>
-            <a href @click.prevent="setCurrentPopup('Record')">我的中獎紀錄</a>
-            <a href @click.prevent="setCurrentPopup('Result')">快扭我</a>
+            <a href @click.prevent="setCurrentPopup('History')">我的中獎紀錄</a>
+            <a href @click.prevent="setCurrentPopup('Draw')">快扭我</a>
             <a href @click.prevent="setCurrentPopup('Share')">分享再扭一次</a>
         </nav>
 
@@ -24,8 +24,8 @@
 import { mapState, mapMutations, mapActions } from 'vuex';
 import Warning from '@/components/Warning.vue';
 import Popup from '@/components/Popup.vue';
-import Record from '@/components/Record.vue';
-import Result from '@/components/Result.vue';
+import History from '@/components/History.vue';
+import Draw from '@/components/Draw.vue';
 import Share from '@/components/Share.vue';
 
 export default {
@@ -33,8 +33,8 @@ export default {
     components: {
         Warning,
         Popup,
-        Record,
-        Result,
+        History,
+        Draw,
         Share
     },
     data () {
@@ -43,7 +43,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(['jsonData', 'currentPopup'])
+        ...mapState(['currentPopup', 'history', 'drawRange'])
     },
     watch: {
         async currentPopup (value) {
@@ -56,24 +56,38 @@ export default {
             };
 
             await this.checkLogin().then(() => {
+                // 查詢中獎紀錄
+                if (value === 'History') {
+                    this.$nextTick(async () => {
+                        this.$nuxt.$loading.start();
+                        this.setLoading(true);
+
+                        await this.getHistory();
+                        this.showPopup = true;
+
+                        this.setLoading(false);
+                        this.$nuxt.$loading.finish();
+                    });
+                }
+
+                // 抽獎
+                if (value === 'Draw') {
+                    this.$nextTick(async () => {
+                        this.$nuxt.$loading.start();
+                        this.setLoading(true);
+
+                        await Promise.all([this.draw(), this.getDrawRange()]);
+                        this.showPopup = true;
+
+                        this.setLoading(false);
+                        this.$nuxt.$loading.finish();
+                    });
+                }
+
                 // 分享再扭一次
                 if (value === 'Share') {
                     this.showPopup = true;
-                    return;
-                };
-
-                // 抽獎 & 查詢中獎紀錄
-                this.setJsonData(null);
-                this.$nextTick(async () => {
-                    this.$nuxt.$loading.start();
-                    this.setLoading(true);
-
-                    await this.getJsonData();
-                    this.showPopup = true;
-
-                    this.setLoading(false);
-                    this.$nuxt.$loading.finish();
-                });
+                }
             });
         }
     },
@@ -85,8 +99,8 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['setCurrentPopup', 'setUserToken', 'setLoading', 'setJsonData']),
-        ...mapActions(['getJsonData']),
+        ...mapMutations(['setCurrentPopup', 'setUserToken', 'setLoading']),
+        ...mapActions(['getHistory', 'getDrawRange', 'share', 'draw']),
         checkLogin () {
             return new Promise((resolve, reject) => {
                 // dev環境下直接設置cookie
