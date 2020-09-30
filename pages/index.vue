@@ -51,33 +51,32 @@ export default {
                 return;
             };
 
-            await this.checkLogin().then(() => {
-                this.$nextTick(async () => {
-                    this.$nuxt.$loading.start();
-                    this.setLoading(true);
+            await this.checkLogin();
+            this.$nextTick(async () => {
+                this.$nuxt.$loading.start();
+                this.setLoading(true);
 
-                    if (popupType === 'History') { // 查詢中獎紀錄
-                        await this.getHistory();
-                    }
-                    else if (popupType === 'Draw') { // 抽獎
-                        await Promise.all([this.draw(), this.getDrawRange()]);
-                    }
-                    else if (popupType === 'Share') { // 分享
-                        // TODO: 分享相關邏輯
-                    }
+                if (popupType === 'History') { // 查詢中獎紀錄
+                    await this.getHistory();
+                }
+                else if (popupType === 'Draw') { // 抽獎
+                    await Promise.all([this.draw(), this.getDrawRange()]);
+                }
+                else if (popupType === 'Share') { // 分享
+                    // TODO: 分享相關邏輯
+                }
 
-                    this.showPopup = true;
-                    this.setLoading(false);
-                    this.$nuxt.$loading.finish();
-                });
+                this.showPopup = true;
+                this.setLoading(false);
+                this.$nuxt.$loading.finish();
             });
         }
     },
     mounted () {
-        const currentPopup = localStorage.getItem('currentPopup');
+        const currentPopup = localStorage.getItem('returnPopup');
         if (currentPopup) {
             this.setCurrentPopup(currentPopup);
-            localStorage.removeItem('currentPopup');
+            localStorage.removeItem('returnPopup');
         }
     },
     methods: {
@@ -87,39 +86,43 @@ export default {
             return new Promise((resolve, reject) => {
                 const userToken = this.$Cookies.get('_user_token');
                 if (!userToken) {
-                    localStorage.setItem('currentPopup', this.currentPopup);
-
+                    // 將 currentPopup 設成 null (為了下次可觸發 watch) 前先存入 localStorage
+                    localStorage.setItem('returnPopup', this.currentPopup);
                     this.showPopup = false;
                     this.setCurrentPopup(null);
 
-                    this.redirectToLogin();
+                    this.$swal({
+                        icon: 'info',
+                        title: '請先登入 Vidol 會員',
+                        confirmButtonText: '立即登入'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            this.redirectToLogin();
+                        }
+                        else {
+                            localStorage.removeItem('returnPopup', this.currentPopup);
+                        }
+                    });
                     return;
                 }
                 this.setUserToken(userToken);
                 resolve();
             });
         },
-        async redirectToLogin () {
-            const result = await this.$swal({
-                icon: 'info',
-                title: '請先登入 Vidol 會員',
-                confirmButtonText: '立即登入'
-            });
-            if (result.isConfirmed) {
-                // 模擬登入
-                if (this.$config.ENV === 'dev') {
-                    location.href = this.$config.API_URL;
-                    this.$Cookies.set('_user_token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6MTkwODIyfQ.eyJpZGVudGl0eSI6eyJvYmplY3RJZCI6InZ4SlNBNHZYakIiLCJtZW1iZXJfaWQiOiJrZEdWUDQiLCJzb3VyY2UiOiJ2aWRvbCIsImVtYWlsVmVyaWZpZWQiOmZhbHNlfSwiaXNzIjoidmlkb2wudHYiLCJpYXQiOjE2MDAzMDA4NzAsImV4cCI6MTYwMDkwNTY3MH0.5ZLvoYYxJlh_W-g2OjW9aUD-aLZ72kA0B8oSJRQ8MAfeohr6MszshoK8AZwwSMOUXnGtZXHr814ggVUlGQ9jRg');
-                    return;
-                }
-
-                this.$Cookies.set('user_signed_in_redirect_to', location.origin + location.pathname, { expires: 1 });
-                const redirectUrl = {
-                    sit: 'https://webtest.vidol.tv/login',
-                    prod: 'https://vidol.tv/login'
-                };
-                location.href = redirectUrl[this.$config.ENV];
+        redirectToLogin () {
+            // 模擬登入
+            if (this.$config.ENV === 'dev') {
+                location.href = this.$config.API_URL;
+                this.$Cookies.set('_user_token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6MTkwODIyfQ.eyJpZGVudGl0eSI6eyJvYmplY3RJZCI6InZ4SlNBNHZYakIiLCJtZW1iZXJfaWQiOiJrZEdWUDQiLCJzb3VyY2UiOiJ2aWRvbCIsImVtYWlsVmVyaWZpZWQiOmZhbHNlfSwiaXNzIjoidmlkb2wudHYiLCJpYXQiOjE2MDAzMDA4NzAsImV4cCI6MTYwMDkwNTY3MH0.5ZLvoYYxJlh_W-g2OjW9aUD-aLZ72kA0B8oSJRQ8MAfeohr6MszshoK8AZwwSMOUXnGtZXHr814ggVUlGQ9jRg');
+                return;
             }
+
+            this.$Cookies.set('user_signed_in_redirect_to', location.origin + location.pathname, { expires: 1 });
+            const redirectUrl = {
+                sit: 'https://webtest.vidol.tv/login',
+                prod: 'https://vidol.tv/login'
+            };
+            location.href = redirectUrl[this.$config.ENV];
         }
     }
 };
