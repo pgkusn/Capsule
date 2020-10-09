@@ -52,24 +52,18 @@ export default {
             };
 
             await this.checkLogin();
-            this.$nextTick(async () => {
-                this.$nuxt.$loading.start();
-                this.setLoading(true);
 
-                if (popupType === 'History') { // 查詢中獎紀錄
-                    await this.getHistory();
-                }
-                else if (popupType === 'Draw') { // 抽獎
-                    await Promise.all([this.draw(), this.getDrawRange()]);
-                }
-                else if (popupType === 'Share') { // 分享
-                    // TODO: 分享相關邏輯
-                }
+            if (popupType === 'History') { // 查詢中獎紀錄
+                await this.getHistory();
+            }
+            else if (popupType === 'Draw') { // 抽獎
+                await Promise.all([this.draw(), this.getDrawRange()]);
+            }
+            else if (popupType === 'Share') { // 分享
+                await this.getDrawRange();
+            }
 
-                this.showPopup = true;
-                this.setLoading(false);
-                this.$nuxt.$loading.finish();
-            });
+            this.showPopup = true;
         }
     },
     mounted () {
@@ -80,7 +74,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['setCurrentPopup', 'setUserToken', 'setLoading']),
+        ...mapMutations(['setCurrentPopup', 'setUserToken']),
         ...mapActions(['getHistory', 'getDrawRange', 'share', 'draw']),
         checkLogin () {
             return new Promise((resolve, reject) => {

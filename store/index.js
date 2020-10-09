@@ -4,7 +4,6 @@ export const state = () => ({
     tabletWidth: null,
     mobileWidth: null,
     isReady: false,
-    loading: false,
     currentPopup: null,
     userToken: '',
     history: null,
@@ -25,9 +24,6 @@ export const mutations = {
     setUserToken (state, payload) {
         state.userToken = payload;
     },
-    setLoading (state, payload) {
-        state.loading = payload;
-    },
     setHistory (state, payload) {
         state.history = payload;
     },
@@ -41,57 +37,35 @@ export const mutations = {
 
 export const actions = {
     async getHistory ({ commit }) {
-        try {
-            commit('setHistory', null);
-            const { data } = await this.$axios({
-                method: API.history.method,
-                url: API.history.url
-            });
-            commit('setHistory', data);
-        }
-        catch (error) {
-            console.error(error.toJSON());
-            this._vm.$nuxt.error({ statusCode: 500, message: '網路連線錯誤，請稍後再試！' });
-        }
+        commit('setHistory', null);
+        const { data } = await this.$axios({
+            method: API.history.method,
+            url: API.history.url
+        });
+        commit('setHistory', data);
     },
     async getDrawRange ({ commit }) {
-        try {
-            commit('setDrawRange', null);
-            const { data } = await this.$axios({
-                method: API.drawRange.method,
-                url: API.drawRange.url
-            });
-            commit('setDrawRange', data);
-        }
-        catch (error) {
-            console.error(error.toJSON());
-            this._vm.$nuxt.error({ statusCode: 500, message: '網路連線錯誤，請稍後再試！' });
-        }
+        commit('setDrawRange', null);
+        const { data } = await this.$axios({
+            method: API.drawRange.method,
+            url: API.drawRange.url
+        });
+        commit('setDrawRange', data);
     },
-    async share () {
-        try {
-            const { data } = await this.$axios({
-                method: API.share.method,
-                url: API.share.url
-            });
-        }
-        catch (error) {
-            console.error(error.toJSON());
-            this._vm.$nuxt.error({ statusCode: 500, message: '網路連線錯誤，請稍後再試！' });
-        }
+    async share (context, payload) {
+        const { data } = await this.$axios({
+            method: API.share.method,
+            url: API.share.url,
+            data: payload
+        });
+        return data;
     },
     async draw ({ commit }) {
-        try {
-            const { data } = await this.$axios({
-                method: API.draw.method,
-                url: API.draw.url
-            });
-            commit('setDrawResult', data);
-        }
-        catch (error) {
-            console.error(error.toJSON());
-            this._vm.$nuxt.error({ statusCode: 500, message: '網路連線錯誤，請稍後再試！' });
-        }
+        const { data } = await this.$axios({
+            method: API.draw.method,
+            url: API.draw.url
+        });
+        commit('setDrawResult', data);
     },
     preloadImg (context, imgs) {
         return new Promise(resolve => {

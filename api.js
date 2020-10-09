@@ -1,18 +1,18 @@
 const API = {
     history: {
-        method: 'get',
+        method: 'post',
         url: '/v1/history'
     },
     drawRange: {
-        method: 'get',
+        method: 'post',
         url: '/v1/drawRange'
     },
     share: {
-        method: 'get',
+        method: 'post',
         url: '/v1/share'
     },
     draw: {
-        method: 'get',
+        method: 'post',
         url: '/v1/draw'
     }
 };

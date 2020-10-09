@@ -1,6 +1,6 @@
 <template>
     <div class="draw">
-        <div v-if="drawResult && drawRange" class="draw__content">
+        <template v-if="drawResult && drawRange">
             <div v-if="drawRange.draw">
                 <p>今天抽過了</p>
                 <button @click="setCurrentPopup('Share')">
@@ -21,10 +21,10 @@
                 <p>Vidol 超狂限定優惠</p>
                 <a href="">領優惠</a>
             </div>
-        </div>
-        <div v-else>
+        </template>
+        <template v-else>
             loading..
-        </div>
+        </template>
     </div>
 </template>
 
