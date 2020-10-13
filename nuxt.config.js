@@ -36,6 +36,10 @@ export default {
                 src:
                     'https://polyfill.io/v3/polyfill.js?features=default,fetch,HTMLPictureElement,Array.prototype.find,NodeList.prototype.forEach,URL,URLSearchParams,smoothscroll&flags=gated',
                 defer: 'defer'
+            },
+            {
+                src: 'https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.3/lottie.min.js',
+                defer: 'defer'
             }
         ]
     },

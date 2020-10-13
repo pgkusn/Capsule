@@ -1,6 +1,21 @@
 <template>
     <main>
-        <a href class="warning-toggler" @click.prevent="setCurrentPopup('Warning')">活動注意事項</a>
+        <!-- lottie-test -->
+        <!-- <div class="lottie-test">
+            <div id="svgContainer" />
+            <video
+                src="lottie-test.mov"
+                autoplay
+                muted
+                loop
+            />
+        </div> -->
+
+        <a
+            href
+            class="warning-toggler"
+            @click.prevent="setCurrentPopup('Warning')"
+        >活動注意事項</a>
 
         <nav>
             <a href @click.prevent="setCurrentPopup('History')">我的中獎紀錄</a>
@@ -49,17 +64,20 @@ export default {
             if (popupType === 'Warning') {
                 this.showPopup = true;
                 return;
-            };
+            }
 
             await this.checkLogin();
 
-            if (popupType === 'History') { // 查詢中獎紀錄
+            if (popupType === 'History') {
+                // 查詢中獎紀錄
                 await this.getHistory();
             }
-            else if (popupType === 'Draw') { // 抽獎
+            else if (popupType === 'Draw') {
+                // 抽獎
                 await Promise.all([this.draw(), this.getDrawRange()]);
             }
-            else if (popupType === 'Share') { // 分享
+            else if (popupType === 'Share') {
+                // 分享
                 await this.getDrawRange();
             }
 
@@ -72,6 +90,14 @@ export default {
             this.setCurrentPopup(currentPopup);
             localStorage.removeItem('returnPopup');
         }
+
+        // lottie test
+        // bodymovin.loadAnimation({
+        //     wrapper: document.getElementById('svgContainer'),
+        //     animType: 'svg',
+        //     loop: true,
+        //     path: '/lottie-test.json'
+        // });
     },
     methods: {
         ...mapMutations(['setCurrentPopup', 'setUserToken']),
@@ -89,12 +115,15 @@ export default {
                         icon: 'info',
                         title: '請先登入 Vidol 會員',
                         confirmButtonText: '立即登入'
-                    }).then(result => {
+                    }).then((result) => {
                         if (result.isConfirmed) {
                             this.redirectToLogin();
                         }
                         else {
-                            localStorage.removeItem('returnPopup', this.currentPopup);
+                            localStorage.removeItem(
+                                'returnPopup',
+                                this.currentPopup
+                            );
                         }
                     });
                     return;
@@ -107,11 +136,15 @@ export default {
             // 模擬登入
             if (this.$config.ENV === 'dev') {
                 location.href = this.$config.API_URL;
-                this.$Cookies.set('_user_token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6MTkwODIyfQ.eyJpZGVudGl0eSI6eyJvYmplY3RJZCI6InZ4SlNBNHZYakIiLCJtZW1iZXJfaWQiOiJrZEdWUDQiLCJzb3VyY2UiOiJ2aWRvbCIsImVtYWlsVmVyaWZpZWQiOmZhbHNlfSwiaXNzIjoidmlkb2wudHYiLCJpYXQiOjE2MDAzMDA4NzAsImV4cCI6MTYwMDkwNTY3MH0.5ZLvoYYxJlh_W-g2OjW9aUD-aLZ72kA0B8oSJRQ8MAfeohr6MszshoK8AZwwSMOUXnGtZXHr814ggVUlGQ9jRg');
+                this.$Cookies.set(
+                    '_user_token',
+                    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6MTkwODIyfQ.eyJpZGVudGl0eSI6eyJvYmplY3RJZCI6InZ4SlNBNHZYakIiLCJtZW1iZXJfaWQiOiJrZEdWUDQiLCJzb3VyY2UiOiJ2aWRvbCIsImVtYWlsVmVyaWZpZWQiOmZhbHNlfSwiaXNzIjoidmlkb2wudHYiLCJpYXQiOjE2MDAzMDA4NzAsImV4cCI6MTYwMDkwNTY3MH0.5ZLvoYYxJlh_W-g2OjW9aUD-aLZ72kA0B8oSJRQ8MAfeohr6MszshoK8AZwwSMOUXnGtZXHr814ggVUlGQ9jRg',
+                    { expires: 1 }
+                );
                 return;
             }
 
-            this.$Cookies.set('user_signed_in_redirect_to', location.origin + location.pathname, { expires: 1 });
+            this.$Cookies.set('user_signed_in_redirect_to', location.origin + location.pathname);
             const redirectUrl = {
                 sit: 'https://webtest.vidol.tv/login',
                 prod: 'https://vidol.tv/login'
@@ -159,4 +192,23 @@ nav {
         line-height: 50px;
     }
 }
+// .lottie-test {
+//     position: absolute;
+//     top: 50%;
+//     right: 0;
+//     left: 0;
+//     margin: 0 auto;
+//     width: 300px;
+//     #svgContainer {
+//         position: relative;
+//         z-index: 2;
+//     }
+//     > video {
+//         position: absolute;
+//         top: 50%;
+//         left: 50%;
+//         max-width: 100%;
+//         transform: translate(-50%, -50%);
+//     }
+// }
 </style>
