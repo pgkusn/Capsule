@@ -18,7 +18,7 @@ app.post(API.history.url, async (req, res) => {
     await sleep(1000);
     res.status(200);
     res.json({ text: 'Hello Nuxt' });
-    // res.status(500);
+    // res.status(400);
     // res.end();
 });
 
@@ -26,10 +26,10 @@ app.post(API.drawRange.url, async (req, res) => {
     await sleep(1000);
     res.status(200);
     res.json({
-        draw: true,
+        draw: false,
         share: false
     });
-    // res.status(500);
+    // res.status(400);
     // res.end();
 });
 
@@ -47,7 +47,7 @@ app.post(API.share.url, async (req, res) => {
         //     message: 'user_not_login'
         // }
     );
-    // res.status(500);
+    // res.status(400);
     // res.end();
 });
 
@@ -58,7 +58,7 @@ app.post(API.draw.url, async (req, res) => {
         reward: '獎項名稱',
         status: 'win'
     });
-    // res.status(500);
+    // res.status(400);
     // res.end();
 });
 

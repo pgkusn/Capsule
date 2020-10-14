@@ -92,5 +92,15 @@ export const actions = {
                 };
             }
         });
+    },
+    preloadVideo (context, payload) {
+        return new Promise(resolve => {
+            const video = document.createElement('VIDEO');
+            video.src = payload;
+            video.load();
+            video.addEventListener('canplaythrough', () => {
+                resolve();
+            });
+        });
     }
 };

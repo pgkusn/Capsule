@@ -42,14 +42,14 @@ export default {
 
         this.$nextTick(async () => {
             this.$nuxt.$loading.start();
-            await this.preloadImg([this.bgImg]);
+            await Promise.all([this.preloadImg([this.bgImg]), this.preloadVideo('capsule-bg.mp4')]);
             this.setReady();
             this.$nuxt.$loading.finish();
         });
     },
     methods: {
         ...mapMutations(['setReady']),
-        ...mapActions(['getJsonData', 'preloadImg']),
+        ...mapActions(['getJsonData', 'preloadImg', 'preloadVideo']),
         mediaSensor (minWidth, deviceType) {
             const resizeWidth = pMatchMedia =>
                 this.$store.commit('updateDevice', { deviceType, value: pMatchMedia.matches });

@@ -1,21 +1,8 @@
 <template>
     <main>
-        <!-- lottie-test -->
-        <!-- <div class="lottie-test">
-            <div id="svgContainer" />
-            <video
-                src="lottie-test.mov"
-                autoplay
-                muted
-                loop
-            />
-        </div> -->
+        <Capsule />
 
-        <a
-            href
-            class="warning-toggler"
-            @click.prevent="setCurrentPopup('Warning')"
-        >活動注意事項</a>
+        <a href class="warning-toggler" @click.prevent="setCurrentPopup('Warning')">活動注意事項</a>
 
         <nav>
             <a href @click.prevent="setCurrentPopup('History')">我的中獎紀錄</a>
@@ -38,6 +25,7 @@ import Popup from '@/components/Popup.vue';
 import History from '@/components/History.vue';
 import Draw from '@/components/Draw.vue';
 import Share from '@/components/Share.vue';
+import Capsule from '@/components/Capsule/Capsule.vue';
 
 export default {
     name: 'Index',
@@ -46,7 +34,8 @@ export default {
         Popup,
         History,
         Draw,
-        Share
+        Share,
+        Capsule
     },
     data () {
         return {
@@ -90,14 +79,6 @@ export default {
             this.setCurrentPopup(currentPopup);
             localStorage.removeItem('returnPopup');
         }
-
-        // lottie test
-        // bodymovin.loadAnimation({
-        //     wrapper: document.getElementById('svgContainer'),
-        //     animType: 'svg',
-        //     loop: true,
-        //     path: '/lottie-test.json'
-        // });
     },
     methods: {
         ...mapMutations(['setCurrentPopup', 'setUserToken']),
@@ -177,6 +158,7 @@ nav {
     right: 0;
     bottom: 0;
     left: 0;
+    z-index: map-get($z-index, nav);
     display: flex;
     margin: auto;
     width: 800px;
@@ -192,23 +174,4 @@ nav {
         line-height: 50px;
     }
 }
-// .lottie-test {
-//     position: absolute;
-//     top: 50%;
-//     right: 0;
-//     left: 0;
-//     margin: 0 auto;
-//     width: 300px;
-//     #svgContainer {
-//         position: relative;
-//         z-index: 2;
-//     }
-//     > video {
-//         position: absolute;
-//         top: 50%;
-//         left: 50%;
-//         max-width: 100%;
-//         transform: translate(-50%, -50%);
-//     }
-// }
 </style>
