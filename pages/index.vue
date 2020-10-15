@@ -1,6 +1,6 @@
 <template>
     <main>
-        <Capsule />
+        <Gacha />
 
         <a href class="warning-toggler" @click.prevent="setCurrentPopup('Warning')">活動注意事項</a>
 
@@ -25,7 +25,7 @@ import Popup from '@/components/Popup.vue';
 import History from '@/components/History.vue';
 import Draw from '@/components/Draw.vue';
 import Share from '@/components/Share.vue';
-import Capsule from '@/components/Capsule/Capsule.vue';
+import Gacha from '@/components/Gacha/Gacha.vue';
 
 export default {
     name: 'Index',
@@ -35,7 +35,7 @@ export default {
         History,
         Draw,
         Share,
-        Capsule
+        Gacha
     },
     data () {
         return {

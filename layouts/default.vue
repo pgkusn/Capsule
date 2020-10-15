@@ -42,7 +42,7 @@ export default {
 
         this.$nextTick(async () => {
             this.$nuxt.$loading.start();
-            await Promise.all([this.preloadImg([this.bgImg]), this.preloadVideo('capsule-bg.mp4')]);
+            await Promise.all([this.preloadImg([this.bgImg]), this.preloadVideo('gacha-bg.mp4')]);
             this.setReady();
             this.$nuxt.$loading.finish();
         });

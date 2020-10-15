@@ -1,7 +1,7 @@
 const env = require('dotenv').config({ path: '.env.' + process.env.NODE_ENV }).parsed;
 
-const title = 'lottery';
-const description = '描述';
+const title = '1111驚喜扭扭樂';
+const description = '即日起打開Vidol登入會員，開始進行扭蛋扭扭樂，台劇、華劇一鍵扭，即可獲得「 Vidol 11人VIP歡樂看」、 11日VIP體驗序號及超多折扣!';
 
 export default {
     /*

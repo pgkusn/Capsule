@@ -1,11 +1,11 @@
 <template>
-    <div class="capsule">
+    <div class="gacha">
         <div>
-            <div ref="lottieEl" class="capsule__lottie" :class="{ running: isReady }" />
+            <div ref="lottieEl" class="gacha__lottie" :class="{ running: isReady }" />
             <video
                 ref="video"
-                class="capsule__bg"
-                src="capsule-bg.mp4"
+                class="gacha__bg"
+                src="gacha-bg.mp4"
                 muted
                 playsinline
             />
@@ -18,7 +18,7 @@ import { mapState } from 'vuex';
 import animationData from './data.json';
 
 export default {
-    name: 'Capsule',
+    name: 'Gacha',
     computed: {
         ...mapState(['isReady'])
     },
@@ -47,7 +47,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/sass/common';
 
-.capsule {
+.gacha {
     position: absolute;
     right: 0;
     bottom: 100px;
@@ -64,7 +64,7 @@ export default {
         right: 0;
         bottom: 0;
         left: 0;
-        z-index: map-get($z-index, capsule-svg);
+        z-index: map-get($z-index, gacha-svg);
         animation: popup .5s cubic-bezier(.34, 1.56, .64, 1) 3s both paused;
         &.running {
             animation-play-state: running;
