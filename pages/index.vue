@@ -125,7 +125,7 @@ export default {
                 return;
             }
 
-            this.$Cookies.set('user_signed_in_redirect_to', location.origin + location.pathname);
+            this.$Cookies.set('user_signed_in_redirect_to', location.origin + location.pathname, { domain: 'vidol.tv' });
             const redirectUrl = {
                 sit: 'https://webtest.vidol.tv/login',
                 prod: 'https://vidol.tv/login'
