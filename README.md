@@ -1,4 +1,4 @@
-# gacha
+# GachaLottery
 
 > My ultimate Nuxt.js project
 
