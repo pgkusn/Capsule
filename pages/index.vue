@@ -35,7 +35,7 @@ export default {
         History,
         Draw,
         Share,
-        Gacha
+        Gacha,
     },
     data () {
         return {
