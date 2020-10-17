@@ -1,31 +1,34 @@
 <template>
     <main>
-        <Gacha />
-
-        <a href class="warning-toggler" @click.prevent="setCurrentPopup('Warning')">活動注意事項</a>
-
+        <!-- <a href class="warning-toggler" @click.prevent="setCurrentPopup('Warning')">活動注意事項</a>
         <nav>
             <a href @click.prevent="setCurrentPopup('History')">我的中獎紀錄</a>
             <a href @click.prevent="setCurrentPopup('Draw')">快扭我</a>
             <a href @click.prevent="setCurrentPopup('Share')">分享再扭一次</a>
-        </nav>
+        </nav> -->
 
         <transition name="fade">
             <Popup v-if="showPopup" v-model="showPopup">
                 <component :is="currentPopup" />
             </Popup>
         </transition>
+
+        <div ref="gacha" class="gacha full-page" />
+        <div ref="intro" class="intro full-page" />
+        <div ref="bg" class="bg full-page fadeIn" />
     </main>
 </template>
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex';
+import gachaData from '@/static/animationData/gacha.json';
+import introData from '@/static/animationData/intro.json';
+import bgData from '@/static/animationData/bg.json';
 import Warning from '@/components/Warning.vue';
 import Popup from '@/components/Popup.vue';
 import History from '@/components/History.vue';
 import Draw from '@/components/Draw.vue';
 import Share from '@/components/Share.vue';
-import Gacha from '@/components/Gacha/Gacha.vue';
 
 export default {
     name: 'Index',
@@ -34,8 +37,7 @@ export default {
         Popup,
         History,
         Draw,
-        Share,
-        Gacha,
+        Share
     },
     data () {
         return {
@@ -74,11 +76,14 @@ export default {
         }
     },
     mounted () {
+        // open popup after login
         const currentPopup = localStorage.getItem('returnPopup');
         if (currentPopup) {
             this.setCurrentPopup(currentPopup);
             localStorage.removeItem('returnPopup');
         }
+
+        this.initLottie();
     },
     methods: {
         ...mapMutations(['setCurrentPopup', 'setUserToken']),
@@ -125,12 +130,60 @@ export default {
                 return;
             }
 
-            this.$Cookies.set('user_signed_in_redirect_to', location.origin + location.pathname, { domain: 'vidol.tv' });
+            this.$Cookies.set(
+                'user_signed_in_redirect_to',
+                location.origin + location.pathname,
+                { domain: 'vidol.tv' }
+            );
             const redirectUrl = {
                 sit: 'https://webtest.vidol.tv/login',
                 prod: 'https://vidol.tv/login'
             };
             location.href = redirectUrl[this.$config.ENV];
+        },
+        initLottie () {
+            // intro
+            const introAnim = this.$lottie.loadAnimation({
+                container: this.$refs.intro,
+                renderer: 'svg',
+                loop: false,
+                autoplay: true,
+                animationData: introData
+            });
+            introAnim.addEventListener('DOMLoaded', () => {
+                this.$refs.intro.firstChild.setAttribute(
+                    'preserveAspectRatio',
+                    'xMidYMid slice'
+                );
+            });
+
+            // bg
+            const bgAnim = this.$lottie.loadAnimation({
+                container: this.$refs.bg,
+                renderer: 'svg',
+                loop: true,
+                autoplay: false,
+                animationData: bgData
+            });
+            bgAnim.addEventListener('DOMLoaded', () => {
+                this.$refs.bg.firstChild.setAttribute(
+                    'preserveAspectRatio',
+                    'xMidYMid slice'
+                );
+            });
+
+            // gacha
+            const gachaAnim = this.$lottie.loadAnimation({
+                container: this.$refs.gacha,
+                renderer: 'svg',
+                loop: true,
+                autoplay: false,
+                animationData: gachaData
+            });
+            setTimeout(() => {
+                gachaAnim.play();
+                bgAnim.play();
+            }, 4000); // 2.5s gacha animation delay + 1.5s
         }
     }
 };
@@ -172,6 +225,26 @@ nav {
         color: #fff;
         text-align: center;
         line-height: 50px;
+    }
+}
+
+.full-page {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+.gacha {
+    z-index: map-get($z-index, gacha-svg);
+    animation: popup .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both;
+}
+@keyframes popup {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
     }
 }
 </style>

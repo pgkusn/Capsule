@@ -1,7 +1,7 @@
 <template>
-    <div class="app" :class="{ 'is-mobile': isMobile, 'is-ready': isReady }" :style="{ backgroundImage: mainBg }">
+    <div class="app" :class="{ 'is-mobile': isMobile }">
         <div class="app__content">
-            <a href="https://vidol.tv/" target="_blank" class="logo" />
+            <a href="https://vidol.tv/" target="_blank" class="logo fadeIn" />
             <nuxt />
         </div>
         <VueFooter ref="footer" />
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import VueFooter from '@/components/VueFooter';
 
 export default {
@@ -23,32 +23,16 @@ export default {
         };
     },
     computed: {
-        ...mapState(['tabletWidth', 'isReady']),
+        ...mapState(['tabletWidth']),
         isMobile () {
             return this.$device.isMobile;
-        },
-        bgImg () {
-            return this.tabletWidth ? 'images/bg-m.jpg' : 'images/bg.jpg';
-        }
-    },
-    watch: {
-        tabletWidth (isTablet) {
-            this.mainBg = `url(images/bg${isTablet ? '-m' : ''}.jpg)`;
         }
     },
     mounted () {
         this.mediaSensor(768, 'tablet');
         this.mediaSensor(414, 'mobile');
-
-        this.$nextTick(async () => {
-            this.$nuxt.$loading.start();
-            await Promise.all([this.preloadImg([this.bgImg])]);
-            this.setReady();
-            this.$nuxt.$loading.finish();
-        });
     },
     methods: {
-        ...mapMutations(['setReady']),
         ...mapActions(['getJsonData', 'preloadImg', 'preloadVideo']),
         mediaSensor (minWidth, deviceType) {
             const resizeWidth = pMatchMedia =>
@@ -70,7 +54,9 @@ body {
     height: 100%;
 }
 body {
+    overflow: hidden;
     min-width: 375px;
+    background-color: rgb(50, 70, 245);
 }
 .page-enter-active,
 .page-leave-active {
@@ -99,12 +85,6 @@ body {
     position: relative;
     margin: 0 auto;
     min-height: 100vh;
-    background: 50% 0 / cover;
-    opacity: 0;
-    transition: opacity .5s;
-    &.is-ready {
-        opacity: 1;
-    }
     &__content {
         padding-bottom: 80px;
         @media (max-width: #{$tablet-width}px) {
@@ -129,6 +109,17 @@ a.logo {
         display: block;
         padding-top: percentage(48 / 137);
         content: '';
+    }
+}
+.fadeIn {
+    animation: fadeIn .5s 4s both;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
     }
 }
 </style>

@@ -3,7 +3,6 @@ import API from '~/api.js';
 export const state = () => ({
     tabletWidth: null,
     mobileWidth: null,
-    isReady: false,
     currentPopup: null,
     userToken: '',
     history: null,
@@ -14,9 +13,6 @@ export const state = () => ({
 export const mutations = {
     updateDevice (state, payload) {
         state[payload.deviceType + 'Width'] = payload.value;
-    },
-    setReady (state) {
-        state.isReady = true;
     },
     setCurrentPopup (state, payload) {
         state.currentPopup = payload;
@@ -87,10 +83,12 @@ export const actions = {
                 img.onload = () => {
                     loaded++;
                     if (loaded === imgs.length) {
-                        resolve();
+                        setTimeout(() => {
+                            resolve();
+                        }, 2000);
                     }
                 };
             }
         });
-    },
+    }
 };
