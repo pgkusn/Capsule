@@ -1,21 +1,25 @@
 <template>
     <main>
-        <!-- <a href class="warning-toggler" @click.prevent="setCurrentPopup('Warning')">活動注意事項</a>
-        <nav>
+        <div ref="gacha" class="gacha full-page" />
+        <div ref="intro" class="intro full-page" />
+        <div ref="bg" class="bg full-page fadeIn" />
+        <div class="people">
+            <div ref="peopleLeft" class="people__left fadeIn" />
+            <div ref="peopleRight" class="people__right fadeIn" />
+        </div>
+
+        <nav class="fadeIn">
             <a href @click.prevent="setCurrentPopup('History')">我的中獎紀錄</a>
-            <a href @click.prevent="setCurrentPopup('Draw')">快扭我</a>
             <a href @click.prevent="setCurrentPopup('Share')">分享再扭一次</a>
-        </nav> -->
+            <a href @click.prevent="setCurrentPopup('Draw')">快扭我</a>
+            <a href @click.prevent="setCurrentPopup('Warning')">活動注意事項</a>
+        </nav>
 
         <transition name="fade">
             <Popup v-if="showPopup" v-model="showPopup">
                 <component :is="currentPopup" />
             </Popup>
         </transition>
-
-        <div ref="gacha" class="gacha full-page" />
-        <div ref="intro" class="intro full-page" />
-        <div ref="bg" class="bg full-page fadeIn" />
     </main>
 </template>
 
@@ -23,6 +27,8 @@
 import { mapState, mapMutations, mapActions } from 'vuex';
 import gachaData from '@/static/animationData/gacha.json';
 import introData from '@/static/animationData/intro.json';
+import peopleLeftData from '@/static/animationData/people-left.json';
+import peopleRightData from '@/static/animationData/people-right.json';
 import bgData from '@/static/animationData/bg.json';
 import Warning from '@/components/Warning.vue';
 import Popup from '@/components/Popup.vue';
@@ -142,6 +148,18 @@ export default {
             location.href = redirectUrl[this.$config.ENV];
         },
         initLottie () {
+            // gacha
+            const gachaAnim = this.$lottie.loadAnimation({
+                container: this.$refs.gacha,
+                renderer: 'svg',
+                loop: true,
+                autoplay: false,
+                animationData: gachaData
+            });
+            // gachaAnim.addEventListener('DOMLoaded', () => {
+            //     this.setSVGAttr(this.$refs.gacha.firstChild);
+            // });
+
             // intro
             const introAnim = this.$lottie.loadAnimation({
                 container: this.$refs.intro,
@@ -151,10 +169,7 @@ export default {
                 animationData: introData
             });
             introAnim.addEventListener('DOMLoaded', () => {
-                this.$refs.intro.firstChild.setAttribute(
-                    'preserveAspectRatio',
-                    'xMidYMid slice'
-                );
+                this.setSVGAttr(this.$refs.intro.firstChild);
             });
 
             // bg
@@ -166,24 +181,40 @@ export default {
                 animationData: bgData
             });
             bgAnim.addEventListener('DOMLoaded', () => {
-                this.$refs.bg.firstChild.setAttribute(
-                    'preserveAspectRatio',
-                    'xMidYMid slice'
-                );
+                this.setSVGAttr(this.$refs.bg.firstChild);
             });
 
-            // gacha
-            const gachaAnim = this.$lottie.loadAnimation({
-                container: this.$refs.gacha,
+            // peopleLeft
+            const peopleLeftAnim = this.$lottie.loadAnimation({
+                container: this.$refs.peopleLeft,
                 renderer: 'svg',
                 loop: true,
-                autoplay: false,
-                animationData: gachaData
+                autoplay: true,
+                animationData: peopleLeftData
             });
+            // peopleLeftAnim.addEventListener('DOMLoaded', () => {
+            //     this.setSVGAttr(this.$refs.peopleLeft.firstChild);
+            // });
+
+            // peopleRight
+            const peopleRightAnim = this.$lottie.loadAnimation({
+                container: this.$refs.peopleRight,
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                animationData: peopleRightData
+            });
+            // peopleRightAnim.addEventListener('DOMLoaded', () => {
+            //     this.setSVGAttr(this.$refs.peopleRight.firstChild);
+            // });
+
             setTimeout(() => {
                 gachaAnim.play();
                 bgAnim.play();
             }, 4000); // 2.5s gacha animation delay + 1.5s
+        },
+        setSVGAttr (el) {
+            el.setAttribute('preserveAspectRatio', 'xMidYMid slice'); // slice:滿版
         }
     }
 };
@@ -191,42 +222,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/sass/common';
-
-.warning-toggler {
-    position: absolute;
-    top: 30%;
-    right: 0;
-    left: 0;
-    margin: 0 auto;
-    width: 150px;
-    height: 50px;
-    background-color: #c00;
-    color: #fff;
-    text-align: center;
-    line-height: 50px;
-}
-nav {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: map-get($z-index, nav);
-    display: flex;
-    margin: auto;
-    width: 800px;
-    height: 100px;
-    justify-content: space-evenly;
-    align-items: center;
-    > a {
-        width: 150px;
-        height: 50px;
-        background-color: #000;
-        color: #fff;
-        text-align: center;
-        line-height: 50px;
-    }
-}
 
 .full-page {
     position: absolute;
@@ -245,6 +240,48 @@ nav {
     }
     to {
         transform: scale(1);
+    }
+}
+.people {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    max-width: 1800px;
+    width: 100%;
+    height: 200px;
+    transform: translateX(-50%);
+    justify-content: space-between;
+    &__left {
+        margin-right: percentage(400 / 1920);
+    }
+}
+nav {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    z-index: map-get($z-index, nav);
+    display: flex;
+    max-width: 1800px;
+    width: 100%;
+    height: 100px;
+    transform: translateX(-50%);
+    justify-content: space-between;
+    > a {
+        width: 295px;
+        border-radius: 50px;
+        background-color: #000;
+        color: #fff;
+        text-align: center;
+        font-size: 35px;
+        line-height: 100px;
+        flex-shrink: 0;
+        &:nth-child(1) {
+        }
+        &:nth-child(2) {
+        }
+        &:nth-child(3) {
+        }
     }
 }
 </style>
