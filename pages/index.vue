@@ -1,26 +1,47 @@
 <template>
-    <main>
-        <div ref="gacha" class="gacha full-page" />
+    <div class="main-container">
         <div ref="intro" class="intro full-page" />
-        <div ref="bg" class="bg full-page fadeIn" />
-        <div class="people">
-            <div ref="peopleLeft" class="people__left fadeIn" />
-            <div ref="peopleRight" class="people__right fadeIn" />
-        </div>
+        <main>
+            <div ref="gacha" class="gacha full-page" />
+            <div ref="bg" class="bg full-page fadeIn" />
+            <div class="people">
+                <div ref="peopleLeft" class="people__item fadeIn" />
+                <div ref="peopleRight" class="people__item fadeIn" />
+            </div>
+            <div class="content">
+                <hgroup class="title fadeIn">
+                    <h1><img src="@/assets/images/title.png" alt="1111 驚喜扭扭樂"></h1>
+                    <h2><img src="@/assets/images/subtitle.png" alt="台劇華劇扭起來！Vidol 11人VIP歡樂看、11日VIP體驗序號及超多折扣!"></h2>
+                </hgroup>
 
-        <nav class="fadeIn">
-            <a href @click.prevent="setCurrentPopup('History')">我的中獎紀錄</a>
-            <a href @click.prevent="setCurrentPopup('Share')">分享再扭一次</a>
-            <a href @click.prevent="setCurrentPopup('Draw')">快扭我</a>
-            <a href @click.prevent="setCurrentPopup('Warning')">活動注意事項</a>
-        </nav>
+                <ul class="nav fadeIn">
+                    <li>
+                        <button class="history-btn" @click.prevent="setCurrentPopup('History')">
+                            <img src="@/assets/images/btn-history.png" alt="中獎紀錄">
+                        </button>
+                        <button class="share-btn" @click.prevent="setCurrentPopup('Share')">
+                            <img src="@/assets/images/btn-share.png" alt="分享再扭一次">
+                        </button>
+                    </li>
+                    <li>
+                        <button class="draw-btn" @click.prevent="setCurrentPopup('Draw')">
+                            <img src="@/assets/images/btn-draw.png" alt="快扭我">
+                        </button>
+                    </li>
+                </ul>
 
-        <transition name="fade">
-            <Popup v-if="showPopup" v-model="showPopup">
-                <component :is="currentPopup" />
-            </Popup>
-        </transition>
-    </main>
+                <button class="warning-btn fadeIn" @click.prevent="setCurrentPopup('Warning')">
+                    <img src="https://fakeimg.pl/295x97/?text=活動注意事項&font=noto" style="border-radius:50px" alt="活動注意事項">
+                </button>
+
+                <transition name="fade">
+                    <Popup v-if="showPopup" v-model="showPopup">
+                        <component :is="currentPopup" />
+                    </Popup>
+                </transition>
+            </div>
+        </main>
+    </div>
 </template>
 
 <script>
@@ -93,7 +114,7 @@ export default {
     },
     methods: {
         ...mapMutations(['setCurrentPopup', 'setUserToken']),
-        ...mapActions(['getHistory', 'getDrawRange', 'share', 'draw']),
+        ...mapActions(['getHistory', 'getDrawRange', 'share', 'draw', 'preloadImg']),
         checkLogin () {
             return new Promise((resolve, reject) => {
                 const userToken = this.$Cookies.get('_user_token');
@@ -223,6 +244,14 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/sass/common';
 
+main {
+    position: relative;
+    padding: 0 20px;
+    height: 100%;
+}
+.main-container {
+    height: 100%;
+}
 .full-page {
     position: absolute;
     top: 0;
@@ -244,44 +273,60 @@ export default {
 }
 .people {
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     display: flex;
-    max-width: 1800px;
     width: 100%;
-    height: 200px;
     transform: translateX(-50%);
-    justify-content: space-between;
-    &__left {
-        margin-right: percentage(400 / 1920);
+    justify-content: center;
+    &__item + .people__item {
+        margin-left: 400px;
     }
 }
-nav {
+.content {
+    position: relative;
+    height: 100%;
+}
+.title {
     position: absolute;
-    top: 70%;
+    bottom: 50%;
+    left: calc(50% + 200px);
+}
+h2 {
+    margin-top: 30px;
+    padding-left: 16px;
+}
+.nav {
+    position: absolute;
+    top: 76%;
     left: 50%;
     z-index: map-get($z-index, nav);
     display: flex;
-    max-width: 1800px;
     width: 100%;
     height: 100px;
     transform: translateX(-50%);
-    justify-content: space-between;
-    > a {
-        width: 295px;
-        border-radius: 50px;
-        background-color: #000;
-        color: #fff;
-        text-align: center;
-        font-size: 35px;
-        line-height: 100px;
-        flex-shrink: 0;
-        &:nth-child(1) {
-        }
-        &:nth-child(2) {
-        }
-        &:nth-child(3) {
+    justify-content: center;
+    align-items: center;
+    > li {
+        display: flex;
+        width: 700px;
+        justify-content: center;
+        + li {
+            margin-left: 400px;
         }
     }
+}
+.share-btn {
+    margin-left: 20px;
+}
+.draw-btn {
+    width: vw(346, $desktop-width);
+}
+.warning-btn {
+    position: absolute;
+    top: 20%;
+    left: 10%;
+    z-index: map-get($z-index, nav);
+    width: vw(295, $desktop-width);
 }
 </style>

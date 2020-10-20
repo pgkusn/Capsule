@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
 import VueFooter from '@/components/VueFooter';
 
 export default {
@@ -23,7 +22,6 @@ export default {
         };
     },
     computed: {
-        ...mapState(['tabletWidth']),
         isMobile () {
             return this.$device.isMobile;
         }
@@ -33,7 +31,6 @@ export default {
         this.mediaSensor(414, 'mobile');
     },
     methods: {
-        ...mapActions(['getJsonData', 'preloadImg', 'preloadVideo']),
         mediaSensor (minWidth, deviceType) {
             const resizeWidth = pMatchMedia =>
                 this.$store.commit('updateDevice', { deviceType, value: pMatchMedia.matches });
@@ -87,6 +84,7 @@ body {
     min-height: 100vh;
     &__content {
         padding-bottom: 80px;
+        height: 100vh;
         @media (max-width: #{$tablet-width}px) {
             padding-bottom: 45px;
         }

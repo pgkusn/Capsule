@@ -1,7 +1,7 @@
 <template>
     <div class="popup">
         <div class="popup__content">
-            <div class="popup__close" @click="closePopup" />
+            <div id="popupClose" class="popup__close" @click="closePopup" />
             <slot />
         </div>
         <div class="popup__overlay" @click="closePopup" />
@@ -42,55 +42,44 @@ export default {
     z-index: map-get($z-index, popup);
     display: flex;
     overflow: auto;
-    padding: 10px;
-    @media (min-width: #{$tablet-width + 1}px) {
-        padding: 30px;
-    }
     &__content {
+        @include vw-size(1920, 1294);
         position: relative;
+        top: -40px; // footer height / 2
         z-index: 1;
         margin: auto;
-        max-width: 1180px;
-        width: 100%;
+        @media (max-width: #{$tablet-width}px) {
+            top: -22.5px; // footer height / 2
+        }
     }
     &__close {
+        @include vw-size(1920, 100, 100);
         position: absolute;
-        top: 5px;
-        right: 5px;
-        display: flex;
-        width: 40px;
-        height: 40px;
-        border: 4px solid #000;
+        top: 0;
+        right: 0;
         border-radius: 50%;
-        background-color: #fff;
         cursor: pointer;
-        transform: rotate(45deg);
-        @media (min-width: #{$tablet-width + 1}px) {
-            width: 50px;
-            height: 50px;
-            border-width: 5px;
-        }
-        &::before,
-        &::after {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            margin: auto;
-            width: 20px;
-            height: 3px;
-            border-radius: 2px;
-            background-color: #000;
-            content: '';
-            @media (min-width: #{$tablet-width + 1}px) {
-                width: 25px;
-                height: 4px;
-            }
-        }
-        &::before {
-            transform: rotate(90deg);
-        }
+        // background-color: rgba(#000, .5);
+        // display: flex;
+        // box-sizing: content-box;
+        // border: vw(10, 1920) solid #ed2828;
+        // transform: rotate(45deg);
+        // &::before,
+        // &::after {
+        //     @include vw-size(1920, 53, 10);
+        //     position: absolute;
+        //     top: 0;
+        //     right: 0;
+        //     bottom: 0;
+        //     left: 0;
+        //     margin: auto;
+        //     border-radius: 5px;
+        //     background-color: #fff;
+        //     content: '';
+        // }
+        // &::before {
+        //     transform: rotate(90deg);
+        // }
     }
     &__overlay {
         position: fixed;

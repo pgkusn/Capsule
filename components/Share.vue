@@ -1,6 +1,6 @@
 <template>
     <div class="share">
-        <template v-if="drawRange">
+        <div v-if="drawRange">
             <p v-if="drawRange.draw && drawRange.share">
                 今天分享過了！<br>明天再來扭～
             </p>
@@ -10,19 +10,23 @@
             <a href class="share__fb" @click.prevent="fbShare">
                 <img src="@/assets/images/share_fb.png" alt="">
             </a>
-        </template>
-        <template v-else>
-            loading..
-        </template>
+        </div>
+        <div v-else>
+            <Loading class="draw__loading" />
+        </div>
     </div>
 </template>
 
 <script>
 /* eslint-disable no-undef */
 import { mapState, mapMutations, mapActions } from 'vuex';
+import Loading from '@/components/Loading.vue';
 
 export default {
     name: 'Share',
+    components: {
+        Loading
+    },
     data () {
         return {
             userID: ''
@@ -33,7 +37,10 @@ export default {
     },
     watch: {
         async userID (value) {
-            if (this.drawRange.draw && !this.drawRange.share) {
+            if (!this.drawRange.draw) {
+                this.setCurrentPopup('Draw');
+            }
+            else if (!this.drawRange.share) {
                 const result = await this.share({
                     user_token: this.$Cookies.get('_user_token'),
                     fb: value
@@ -120,17 +127,17 @@ export default {
 <style lang="scss" scoped>
 .share {
     display: flex;
-    flex-direction: column;
     padding: 2rem;
     width: 100%;
     height: 50vh;
     background-color: #fff;
     font-size: 2rem;
+    line-height: 1.2;
     justify-content: center;
     align-items: center;
-    line-height: 1.2;
     &__fb {
-        margin-top: 1rem;
+        display: block;
+        margin: 1rem auto 0;
         width: 94px;
     }
 }

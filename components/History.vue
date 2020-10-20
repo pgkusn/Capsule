@@ -1,20 +1,24 @@
 <template>
     <div class="history">
-        <div v-if="history" class="history__content">
+        <div v-if="history">
             <h1>我的中獎紀錄</h1>
             <p>{{ history.text }}</p>
         </div>
         <div v-else>
-            loading..
+            <Loading class="draw__loading" />
         </div>
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import Loading from '@/components/Loading.vue';
 
 export default {
     name: 'History',
+    components: {
+        Loading
+    },
     computed: {
         ...mapState(['history'])
     }
@@ -31,7 +35,7 @@ export default {
     font-size: 2rem;
     justify-content: center;
     align-items: center;
-    &__content {
+    > div {
         display: flex;
         flex-direction: column;
         align-items: center;

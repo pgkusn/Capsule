@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: false })); // 接收 form urlencoded 的�
 const upload = multer();
 
 app.post(API.history.url, async (req, res) => {
-    await sleep(1000);
+    await sleep(500);
     res.status(200);
     res.json({ text: 'Hello Nuxt' });
     // res.status(400);
@@ -23,7 +23,7 @@ app.post(API.history.url, async (req, res) => {
 });
 
 app.post(API.drawRange.url, async (req, res) => {
-    await sleep(1000);
+    await sleep(500);
     res.status(200);
     res.json({
         draw: false,
@@ -34,7 +34,7 @@ app.post(API.drawRange.url, async (req, res) => {
 });
 
 app.post(API.share.url, async (req, res) => {
-    await sleep(1000);
+    await sleep(500);
     res.status(200);
     console.log(req.body);
     res.json(
@@ -52,10 +52,10 @@ app.post(API.share.url, async (req, res) => {
 });
 
 app.post(API.draw.url, async (req, res) => {
-    await sleep(1000);
+    await sleep(500);
     res.status(200);
     res.json({
-        reward: '獎項名稱',
+        reward: 'reward1',
         status: 'win'
     });
     // res.status(400);
@@ -64,7 +64,7 @@ app.post(API.draw.url, async (req, res) => {
 
 // 登入後導向
 app.get('/', async (req, res) => {
-    await sleep(1000);
+    await sleep(500);
     res.redirect('/');
 });
 

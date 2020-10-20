@@ -19,6 +19,7 @@
     "core-js": "^3.6.5",
     "cross-env": "^7.0.2",
     "js-cookie": "^2.2.1",
+    "loaders.css": "^0.1.2",
     "lottie-web": "^5.7.3",
     "nuxt": "^2.14.5",
     "vue-sweetalert2": "^3.0.8"

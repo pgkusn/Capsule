@@ -29,7 +29,7 @@ export default {
     z-index: 10;
     min-width: 375px;
     width: 100%;
-    background-color: #000;
+    background-color: #472fff;
     color: #fff;
     > .container {
         display: flex;
