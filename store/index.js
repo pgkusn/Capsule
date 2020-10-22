@@ -42,24 +42,32 @@ export const actions = {
     },
     async getDrawRange ({ commit }) {
         commit('setDrawRange', null);
+        const form = new FormData();
+        form.append('_user_token', this._vm.$Cookies.get('_user_token'));
         const { data } = await this.$axios({
             method: API.drawRange.method,
-            url: API.drawRange.url
+            url: API.drawRange.url,
+            data: form
         });
         commit('setDrawRange', data);
     },
     async share (context, payload) {
-        const { data } = await this.$axios({
+        const form = new FormData();
+        form.append('fb', payload);
+        form.append('_user_token', this._vm.$Cookies.get('_user_token'));
+        await this.$axios({
             method: API.share.method,
             url: API.share.url,
-            data: payload
+            data: form
         });
-        return data;
     },
     async draw ({ commit }) {
+        const form = new FormData();
+        form.append('_user_token', this._vm.$Cookies.get('_user_token'));
         const { data } = await this.$axios({
             method: API.draw.method,
-            url: API.draw.url
+            url: API.draw.url,
+            data: form
         });
         commit('setDrawResult', data);
     },

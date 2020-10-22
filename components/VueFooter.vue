@@ -16,7 +16,12 @@
 
 <script>
 export default {
-    name: 'VueFooter'
+    name: 'VueFooter',
+    methods: {
+        lineShare () {
+            window.open('http://line.naver.jp/R/msg/text/?台劇、華劇扭起來!11人歡樂看、11日體驗序號及超多折扣等你來扭：活動網址：' + location.origin + location.pathname);
+        }
+    }
 };
 </script>
 

@@ -1,8 +1,8 @@
 <template>
     <div class="draw">
-        <div v-if="drawResult && drawRange" :class="popupClass" :style="{ backgroundImage: `url(images/popup-bg/${popupClass}.jpg)` }">
+        <div v-if="drawRange" :class="popupClass" :style="{ backgroundImage: popupClass && `url(images/popup-bg/${popupClass}.jpg)` }">
             <button class="draw__btn" @click="popupBtnOnClick">
-                <img :src="require(`@/assets/images/popup-btn/${popupBtn}.png`)">
+                <img v-if="popupBtn" :src="require(`@/assets/images/popup-btn/${popupBtn}.png`)">
             </button>
         </div>
         <div v-else>
@@ -23,10 +23,22 @@ export default {
     computed: {
         ...mapState(['drawResult', 'drawRange']),
         popupClass () {
-            return this.drawRange.draw ? 'goshare' : this.drawResult.status === 'win' ? this.drawResult.reward : this.drawResult.status;
+            if (this.drawRange.draw) {
+                return 'goshare';
+            }
+            if (this.drawResult) {
+                return this.drawResult.status === 'win' ? this.drawResult.reward : this.drawResult.status;
+            }
+            return '';
         },
         popupBtn () {
-            return this.drawRange.draw ? 'goshare' : this.drawResult.status;
+            if (this.drawRange.draw) {
+                return 'goshare';
+            }
+            if (this.drawResult) {
+                return this.drawResult.status;
+            }
+            return '';
         }
     },
     methods: {

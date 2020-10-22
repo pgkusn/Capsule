@@ -1,4 +1,4 @@
-# GachaLottery
+# Capsule
 
 > My ultimate Nuxt.js project
 

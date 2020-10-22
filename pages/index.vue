@@ -97,7 +97,10 @@ export default {
             }
             else if (popupType === 'Draw') {
                 // 抽獎
-                await Promise.all([this.draw(), this.getDrawRange()]);
+                await this.getDrawRange();
+                if (!this.drawRange.draw) {
+                    await this.draw();
+                }
             }
             else if (popupType === 'Share') {
                 // 分享
@@ -152,13 +155,15 @@ export default {
         },
         redirectToLogin () {
             // 模擬登入
-            if (this.$config.ENV === 'dev') {
-                location.href = this.$config.API_URL;
+            if (location.hostname === 'localhost') {
                 this.$Cookies.set(
                     '_user_token',
-                    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6MTkwODIyfQ.eyJpZGVudGl0eSI6eyJvYmplY3RJZCI6InZ4SlNBNHZYakIiLCJtZW1iZXJfaWQiOiJrZEdWUDQiLCJzb3VyY2UiOiJ2aWRvbCIsImVtYWlsVmVyaWZpZWQiOmZhbHNlfSwiaXNzIjoidmlkb2wudHYiLCJpYXQiOjE2MDAzMDA4NzAsImV4cCI6MTYwMDkwNTY3MH0.5ZLvoYYxJlh_W-g2OjW9aUD-aLZ72kA0B8oSJRQ8MAfeohr6MszshoK8AZwwSMOUXnGtZXHr814ggVUlGQ9jRg',
+                    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6MTkwODIyfQ.eyJpZGVudGl0eSI6eyJvYmplY3RJZCI6IkZHUHVRM3hhaHMiLCJtZW1iZXJfaWQiOiJ0d2FZNDMiLCJzb3VyY2UiOiJ2aWRvbCIsImVtYWlsVmVyaWZpZWQiOmZhbHNlfSwiaXNzIjoidmlkb2wudHYiLCJpYXQiOjE2MDMzNDkwMjEsImV4cCI6MTYwMzk1MzgyMX0.lNJWOHye06u-LDoIZr2QSXrbLBH4IB8X0qQjN3YsCRcm8-ydaydXytnSJK-IbGs1x_eblJdwYa8WCxsHPL1URA',
                     { expires: 1 }
                 );
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
                 return;
             }
 
@@ -226,8 +231,8 @@ export default {
             });
 
             setTimeout(() => {
-                // gachaAnim.play();
-                // bgAnim.play();
+                gachaAnim.play();
+                bgAnim.play();
             }, 4000); // 2.5s gacha animation delay + 1.5s
         },
         setSVGAttr (el) {

@@ -41,15 +41,8 @@ export default {
                 this.setCurrentPopup('Draw');
             }
             else if (!this.drawRange.share) {
-                const result = await this.share({ fb: value });
-                if (result.code === 'S0000000') {
-                    this.setCurrentPopup('Draw');
-                }
-                else {
-                    console.error(result.message);
-                    this.$nuxt.error({ statusCode: 500, message: '網路連線錯誤，請稍後再試！' });
-                    this.$nuxt.$loading.finish();
-                }
+                await this.share(value);
+                this.setCurrentPopup('Draw');
             }
         }
     },
@@ -62,7 +55,7 @@ export default {
         fbInit () {
             window.fbAsyncInit = () => {
                 FB.init({
-                    appId: this.$config.ENV === 'dev' ? '512477409242587' : '1044817312247946',
+                    appId: location.hostname === 'localhost' ? '512477409242587' : '1044817312247946',
                     autoLogAppEvents: true,
                     xfbml: true,
                     version: 'v2.10',
@@ -84,7 +77,7 @@ export default {
             })(document, 'script', 'facebook-jssdk');
         },
         fbShare () {
-            if (this.$config.ENV === 'dev') {
+            if (location.hostname === 'localhost') {
                 this.userID = '666';
                 console.log('已分享');
                 return;
@@ -93,7 +86,7 @@ export default {
                 {
                     method: 'share',
                     display: 'popup',
-                    href: this.$config.ENV === 'dev' ? 'https://vidol.tv/' : location.href
+                    href: location.hostname === 'localhost' ? 'https://vidol.tv/' : location.href
                 },
                 res => {
                     if (res && !res.error_message) {

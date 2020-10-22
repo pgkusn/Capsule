@@ -2,7 +2,7 @@
     <div class="history">
         <div v-if="history">
             <h1>我的中獎紀錄</h1>
-            <p>{{ history.text }}</p>
+            <div><pre>{{ history }}</pre></div>
         </div>
         <div v-else>
             <Loading class="draw__loading" />
@@ -32,7 +32,6 @@ export default {
     width: 100%;
     height: 50vh;
     background-color: #fff;
-    font-size: 2rem;
     justify-content: center;
     align-items: center;
     > div {
