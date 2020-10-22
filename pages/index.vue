@@ -49,9 +49,13 @@
 import { mapState, mapMutations, mapActions } from 'vuex';
 import gachaData from '@/static/lottieData/gacha.json';
 import introData from '@/static/lottieData/intro.json';
-import peopleLeftData from '@/static/lottieData/people-left.json';
-import peopleRightData from '@/static/lottieData/people-right.json';
+import introDataMb from '@/static/lottieData/intro-s.json';
 import bgData from '@/static/lottieData/bg.json';
+import bgDataMb from '@/static/lottieData/bg-s.json';
+import peopleLeftData from '@/static/lottieData/people-left.json';
+import peopleLeftDataMb from '@/static/lottieData/people-left-s.json';
+import peopleRightData from '@/static/lottieData/people-right.json';
+import peopleRightDataMb from '@/static/lottieData/people-right-s.json';
 import Warning from '@/components/Warning.vue';
 import Popup from '@/components/Popup.vue';
 import History from '@/components/History.vue';
@@ -222,8 +226,8 @@ export default {
             });
 
             setTimeout(() => {
-                gachaAnim.play();
-                bgAnim.play();
+                // gachaAnim.play();
+                // bgAnim.play();
             }, 4000); // 2.5s gacha animation delay + 1.5s
         },
         setSVGAttr (el) {

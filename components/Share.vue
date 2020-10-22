@@ -41,10 +41,7 @@ export default {
                 this.setCurrentPopup('Draw');
             }
             else if (!this.drawRange.share) {
-                const result = await this.share({
-                    user_token: this.$Cookies.get('_user_token'),
-                    fb: value
-                });
+                const result = await this.share({ fb: value });
                 if (result.code === 'S0000000') {
                     this.setCurrentPopup('Draw');
                 }
