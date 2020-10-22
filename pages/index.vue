@@ -1,18 +1,21 @@
 <template>
     <div class="main-container">
-        <div ref="intro" class="intro full-page" />
+        <div ref="intro" class="intro" />
         <main>
-            <div ref="gacha" class="gacha full-page" />
-            <div ref="bg" class="bg full-page fadeIn" />
-            <div class="people">
-                <div ref="peopleLeft" class="people__item fadeIn" />
-                <div ref="peopleRight" class="people__item fadeIn" />
-            </div>
-            <div class="content">
+            <div ref="gacha" class="gacha" />
+
+            <div ref="bg" class="bg fadeIn" />
+
+            <div class="container">
                 <hgroup class="title fadeIn">
                     <h1><img src="@/assets/images/title.png" alt="1111 驚喜扭扭樂"></h1>
                     <h2><img src="@/assets/images/subtitle.png" alt="台劇華劇扭起來！Vidol 11人VIP歡樂看、11日VIP體驗序號及超多折扣!"></h2>
                 </hgroup>
+
+                <ul class="people">
+                    <li ref="peopleLeft" class="people__item fadeIn" />
+                    <li ref="peopleRight" class="people__item fadeIn" />
+                </ul>
 
                 <ul class="nav fadeIn">
                     <li>
@@ -230,8 +233,8 @@ export default {
             // });
 
             setTimeout(() => {
-                gachaAnim.play();
-                bgAnim.play();
+                // gachaAnim.play();
+                // bgAnim.play();
             }, 4000); // 2.5s gacha animation delay + 1.5s
         },
         setSVGAttr (el) {
@@ -246,13 +249,13 @@ export default {
 
 main {
     position: relative;
-    padding: 0 20px;
     height: 100%;
 }
 .main-container {
     height: 100%;
 }
-.full-page {
+.intro,
+.bg {
     position: absolute;
     top: 0;
     right: 0;
@@ -260,7 +263,14 @@ main {
     left: 0;
 }
 .gacha {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     z-index: map-get($z-index, gacha-svg);
+    margin: auto;
+    width: 400px;
     animation: popup .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both;
 }
 @keyframes popup {
@@ -271,21 +281,14 @@ main {
         transform: scale(1);
     }
 }
-.people {
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    display: flex;
-    width: 100%;
-    transform: translateX(-50%);
-    justify-content: center;
-    &__item + .people__item {
-        margin-left: 400px;
-    }
-}
-.content {
+.container {
     position: relative;
+    margin: 0 auto;
+    max-width: #{$desktop-width}px;
+    width: calc(100% - 40px);
     height: 100%;
+    @media (max-width: #{$content-width - 1}px) {
+    }
 }
 .title {
     position: absolute;
@@ -296,16 +299,29 @@ h2 {
     margin-top: 30px;
     padding-left: 16px;
 }
+.people {
+    position: absolute;
+    top: 55%;
+    left: 0;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    // @media (max-width: #{$content-width}px) {
+    //     top: 60%;
+    // }
+    &__item + .people__item {
+        margin-left: 400px;
+    }
+}
 .nav {
     position: absolute;
-    top: 76%;
-    left: 50%;
+    top: calc(55% + #{vw(203, $desktop-width)});
+    left: 0;
     z-index: map-get($z-index, nav);
     display: flex;
     width: 100%;
     height: 100px;
-    transform: translateX(-50%);
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     > li {
         display: flex;

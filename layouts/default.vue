@@ -71,10 +71,6 @@ body {
 .fade-leave-to {
     opacity: 0;
 }
-.container {
-    margin: 0 auto;
-    max-width: #{$content-width}px;
-}
 .video-container {
     @extend %youtube-iframe;
 }
