@@ -6,54 +6,52 @@
 
             <div ref="bg" class="bg fadeIn" />
 
-            <div class="container">
-                <hgroup class="title fadeIn">
-                    <h1><img src="@/assets/images/title.png" alt="1111 驚喜扭扭樂"></h1>
-                    <h2><img src="@/assets/images/subtitle.png" alt="台劇華劇扭起來！Vidol 11人VIP歡樂看、11日VIP體驗序號及超多折扣!"></h2>
-                </hgroup>
-
-                <ul class="people">
-                    <li ref="peopleLeft" class="people__item fadeIn" />
-                    <li ref="peopleRight" class="people__item fadeIn" />
-                </ul>
-
-                <ul class="nav fadeIn">
+            <div class="content container fadeIn">
+                <ul>
                     <li>
-                        <button class="history-btn" @click.prevent="setCurrentPopup('History')">
-                            <img src="@/assets/images/btn-history.png" alt="中獎紀錄">
-                        </button>
-                        <button class="share-btn" @click.prevent="setCurrentPopup('Share')">
-                            <img src="@/assets/images/btn-share.png" alt="分享再扭一次">
-                        </button>
+                        <div ref="peopleLeft" />
+                        <div class="content__btn-group">
+                            <button class="history-btn" @click.prevent="setCurrentPopup('History')">
+                                <img src="@/assets/images/btn-history.png" alt="中獎紀錄">
+                            </button>
+                            <button class="share-btn" @click.prevent="setCurrentPopup('Share')">
+                                <img src="@/assets/images/btn-share.png" alt="分享再扭一次">
+                            </button>
+                        </div>
                     </li>
                     <li>
+                        <hgroup class="content__title">
+                            <h1><img src="@/assets/images/title.png" alt="1111 驚喜扭扭樂"></h1>
+                            <h2><img src="@/assets/images/subtitle.png" alt="台劇華劇扭起來！Vidol 11人VIP歡樂看、11日VIP體驗序號及超多折扣!"></h2>
+                        </hgroup>
+                        <div ref="peopleRight" />
                         <button class="draw-btn" @click.prevent="setCurrentPopup('Draw')">
                             <img src="@/assets/images/btn-draw.png" alt="快扭我">
                         </button>
                     </li>
                 </ul>
 
-                <button class="warning-btn fadeIn" @click.prevent="setCurrentPopup('Warning')">
+                <button class="warning-btn" @click.prevent="setCurrentPopup('Warning')">
                     <img src="https://fakeimg.pl/295x97/?text=活動注意事項&font=noto" style="border-radius:50px" alt="活動注意事項">
                 </button>
-
-                <transition name="fade">
-                    <Popup v-if="showPopup" v-model="showPopup">
-                        <component :is="currentPopup" />
-                    </Popup>
-                </transition>
             </div>
+
+            <transition name="fade">
+                <Popup v-if="showPopup" v-model="showPopup">
+                    <component :is="currentPopup" />
+                </Popup>
+            </transition>
         </main>
     </div>
 </template>
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex';
-import gachaData from '@/static/animationData/gacha.json';
-import introData from '@/static/animationData/intro.json';
-import peopleLeftData from '@/static/animationData/people-left.json';
-import peopleRightData from '@/static/animationData/people-right.json';
-import bgData from '@/static/animationData/bg.json';
+import gachaData from '@/static/lottieData/gacha.json';
+import introData from '@/static/lottieData/intro.json';
+import peopleLeftData from '@/static/lottieData/people-left.json';
+import peopleRightData from '@/static/lottieData/people-right.json';
+import bgData from '@/static/lottieData/bg.json';
 import Warning from '@/components/Warning.vue';
 import Popup from '@/components/Popup.vue';
 import History from '@/components/History.vue';
@@ -180,9 +178,6 @@ export default {
                 autoplay: false,
                 animationData: gachaData
             });
-            // gachaAnim.addEventListener('DOMLoaded', () => {
-            //     this.setSVGAttr(this.$refs.gacha.firstChild);
-            // });
 
             // intro
             const introAnim = this.$lottie.loadAnimation({
@@ -216,9 +211,6 @@ export default {
                 autoplay: true,
                 animationData: peopleLeftData
             });
-            // peopleLeftAnim.addEventListener('DOMLoaded', () => {
-            //     this.setSVGAttr(this.$refs.peopleLeft.firstChild);
-            // });
 
             // peopleRight
             const peopleRightAnim = this.$lottie.loadAnimation({
@@ -228,13 +220,10 @@ export default {
                 autoplay: true,
                 animationData: peopleRightData
             });
-            // peopleRightAnim.addEventListener('DOMLoaded', () => {
-            //     this.setSVGAttr(this.$refs.peopleRight.firstChild);
-            // });
 
             setTimeout(() => {
-                // gachaAnim.play();
-                // bgAnim.play();
+                gachaAnim.play();
+                bgAnim.play();
             }, 4000); // 2.5s gacha animation delay + 1.5s
         },
         setSVGAttr (el) {
@@ -281,54 +270,39 @@ main {
         transform: scale(1);
     }
 }
-.container {
+.content {
     position: relative;
-    margin: 0 auto;
     max-width: #{$desktop-width}px;
     width: calc(100% - 40px);
     height: 100%;
-    @media (max-width: #{$content-width - 1}px) {
-    }
-}
-.title {
-    position: absolute;
-    bottom: 50%;
-    left: calc(50% + 200px);
-}
-h2 {
-    margin-top: 30px;
-    padding-left: 16px;
-}
-.people {
-    position: absolute;
-    top: 55%;
-    left: 0;
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    // @media (max-width: #{$content-width}px) {
-    //     top: 60%;
-    // }
-    &__item + .people__item {
-        margin-left: 400px;
-    }
-}
-.nav {
-    position: absolute;
-    top: calc(55% + #{vw(203, $desktop-width)});
-    left: 0;
-    z-index: map-get($z-index, nav);
-    display: flex;
-    width: 100%;
-    height: 100px;
-    justify-content: space-between;
-    align-items: center;
-    > li {
+    ul {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        z-index: map-get($z-index, nav);
         display: flex;
-        width: 700px;
-        justify-content: center;
+        width: 100%;
+        transform: translateY(-40%);
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+    li {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        align-items: center;
         + li {
             margin-left: 400px;
+        }
+    }
+    &__btn-group {
+        display: flex;
+    }
+    &__title {
+        margin-bottom: vw(100, $desktop-width);
+        > h2 {
+            margin-top: 30px;
+            padding-left: 16px;
         }
     }
 }
