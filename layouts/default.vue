@@ -1,7 +1,12 @@
 <template>
     <div class="app" :class="{ 'is-mobile': isMobile }">
         <div class="app__content">
-            <a href="https://vidol.tv/" target="_blank" class="logo fadeIn" />
+            <a
+                href="https://vidol.tv/"
+                target="_blank"
+                class="logo"
+                :class="{ fadeIn: !ignoreOpening }"
+            />
             <nuxt />
         </div>
         <VueFooter ref="footer" />
@@ -9,6 +14,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import VueFooter from '@/components/VueFooter';
 
 export default {
@@ -22,6 +28,7 @@ export default {
         };
     },
     computed: {
+        ...mapState(['ignoreOpening']),
         isMobile () {
             return this.$device.isMobile;
         }

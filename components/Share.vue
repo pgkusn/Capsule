@@ -1,13 +1,7 @@
 <template>
     <div class="share">
-        <div v-if="drawRange">
-            <p v-if="drawRange.draw && drawRange.share">
-                今天分享過了！<br>明天再來扭～
-            </p>
-            <p v-else>
-                分享再扭一次
-            </p>
-            <a href class="share__fb" @click.prevent="fbShare">
+        <div v-if="drawRange" :class="popupClass" :style="{ backgroundImage: popupClass && `url(images/popup-bg/${popupClass}.jpg)` }">
+            <a href class="share__btn" @click.prevent="fbShare">
                 <img src="@/assets/images/share_fb.png" alt="">
             </a>
         </div>
@@ -33,7 +27,10 @@ export default {
         };
     },
     computed: {
-        ...mapState(['drawRange'])
+        ...mapState(['drawRange']),
+        popupClass () {
+            return this.drawRange.draw && this.drawRange.share ? 'is-shared' : 'no-shared';
+        }
     },
     watch: {
         async userID (value) {
@@ -62,7 +59,6 @@ export default {
                     oauth: true
                 });
                 FB.AppEvents.logPageView();
-                // FB.logout(); // test
             };
             (function (d, s, id) {
                 var js;
@@ -115,20 +111,36 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/sass/common';
+
 .share {
-    display: flex;
-    padding: 2rem;
-    width: 100%;
-    height: 50vh;
-    background-color: #fff;
-    font-size: 2rem;
-    line-height: 1.2;
-    justify-content: center;
-    align-items: center;
-    &__fb {
-        display: block;
-        margin: 1rem auto 0;
-        width: 94px;
+    > div {
+        padding-top: percentage(757/1294);
+        width: 100%;
+        background-color: #fff;
+        background-size: contain;
+    }
+    &__btn {
+        @include vw-size(1920, 175, 85);
+        position: absolute;
+        @at-root {
+            .is-shared .share__btn {
+                top: vw(448, 1920);
+                right: vw(233, 1920);
+                @media (min-width: #{$desktop-width + 1}px) {
+                    top: 448px;
+                    right: 233px;
+                }
+            }
+            .no-shared .share__btn {
+                top: vw(448, 1920);
+                right: vw(175, 1920);
+                @media (min-width: #{$desktop-width + 1}px) {
+                    top: 448px;
+                    right: 175px;
+                }
+            }
+        }
     }
 }
 </style>

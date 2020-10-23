@@ -1,5 +1,5 @@
 <template>
-    <div class="footer fadeIn">
+    <div class="footer" :class="{ fadeIn: !ignoreOpening }">
         <div class="container">
             <div class="footer__text">
                 <p>© 2020 Vidol All Rights Reserved</p>
@@ -15,8 +15,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
     name: 'VueFooter',
+    computed: {
+        ...mapState(['ignoreOpening'])
+    },
     methods: {
         lineShare () {
             window.open('http://line.naver.jp/R/msg/text/?台劇、華劇扭起來!11人歡樂看、11日體驗序號及超多折扣等你來扭：活動網址：' + location.origin + location.pathname);

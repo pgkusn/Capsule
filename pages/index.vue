@@ -1,12 +1,12 @@
 <template>
     <div class="main-container">
-        <div ref="intro" class="intro" />
+        <div v-if="!ignoreOpening" ref="intro" class="intro" />
         <main>
-            <div ref="gacha" class="gacha" />
+            <div ref="gacha" class="gacha" :class="{ bounceIn: !ignoreOpening }" />
 
-            <div ref="bg" class="bg fadeIn" />
+            <div ref="bg" class="bg" :class="{ fadeIn: !ignoreOpening }" />
 
-            <div class="content container fadeIn">
+            <div class="content container" :class="{ fadeIn: !ignoreOpening }">
                 <ul>
                     <li>
                         <div ref="peopleLeft" />
@@ -73,11 +73,12 @@ export default {
     },
     data () {
         return {
-            showPopup: false
+            showPopup: false,
+            animPlayed: false
         };
     },
     computed: {
-        ...mapState(['currentPopup', 'history', 'drawRange'])
+        ...mapState(['tabletWidth', 'currentPopup', 'history', 'drawRange', 'ignoreOpening'])
     },
     watch: {
         async currentPopup (popupType) {
@@ -108,20 +109,25 @@ export default {
             }
 
             this.showPopup = true;
+        },
+        tabletWidth (value) {
+            this.$lottie.destroy();
+            this.initLottie();
         }
     },
     mounted () {
+        this.setIgnoreOpening(); // debug
+
         // open popup after login
         const currentPopup = localStorage.getItem('returnPopup');
         if (currentPopup) {
+            this.setIgnoreOpening();
             this.setCurrentPopup(currentPopup);
             localStorage.removeItem('returnPopup');
         }
-
-        this.initLottie();
     },
     methods: {
-        ...mapMutations(['setCurrentPopup', 'setUserToken']),
+        ...mapMutations(['setCurrentPopup', 'setUserToken', 'setIgnoreOpening']),
         ...mapActions(['getHistory', 'getDrawRange', 'share', 'draw', 'preloadImg']),
         checkLogin () {
             return new Promise((resolve, reject) => {
@@ -156,11 +162,7 @@ export default {
         redirectToLogin () {
             // 模擬登入
             if (location.hostname === 'localhost') {
-                this.$Cookies.set(
-                    '_user_token',
-                    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6MTkwODIyfQ.eyJpZGVudGl0eSI6eyJvYmplY3RJZCI6IkZHUHVRM3hhaHMiLCJtZW1iZXJfaWQiOiJ0d2FZNDMiLCJzb3VyY2UiOiJ2aWRvbCIsImVtYWlsVmVyaWZpZWQiOmZhbHNlfSwiaXNzIjoidmlkb2wudHYiLCJpYXQiOjE2MDMzNDkwMjEsImV4cCI6MTYwMzk1MzgyMX0.lNJWOHye06u-LDoIZr2QSXrbLBH4IB8X0qQjN3YsCRcm8-ydaydXytnSJK-IbGs1x_eblJdwYa8WCxsHPL1URA',
-                    { expires: 1 }
-                );
+                this.$Cookies.set('_user_token', this.$config.USER_TOKEN, { expires: 1 });
                 setTimeout(() => {
                     location.reload();
                 }, 500);
@@ -182,22 +184,27 @@ export default {
             // gacha
             const gachaAnim = this.$lottie.loadAnimation({
                 container: this.$refs.gacha,
-                renderer: 'svg',
+                renderer: 'canvas',
                 loop: true,
                 autoplay: false,
                 animationData: gachaData
             });
+            this.$refs.gacha.firstChild.style.height = 'auto';
 
             // intro
-            const introAnim = this.$lottie.loadAnimation({
-                container: this.$refs.intro,
-                renderer: 'svg',
-                loop: false,
-                autoplay: true,
-                animationData: introData
-            });
-            introAnim.addEventListener('DOMLoaded', () => {
-                this.setSVGAttr(this.$refs.intro.firstChild);
+            this.$nextTick(() => {
+                if (this.$refs.intro) {
+                    const introAnim = this.$lottie.loadAnimation({
+                        container: this.$refs.intro,
+                        renderer: 'svg',
+                        loop: false,
+                        autoplay: true,
+                        animationData: this.tabletWidth ? introDataMb : introData
+                    });
+                    introAnim.addEventListener('DOMLoaded', () => {
+                        this.setSVGAttr(this.$refs.intro.firstChild);
+                    });
+                }
             });
 
             // bg
@@ -206,7 +213,7 @@ export default {
                 renderer: 'svg',
                 loop: true,
                 autoplay: false,
-                animationData: bgData
+                animationData: this.tabletWidth ? bgDataMb : bgData
             });
             bgAnim.addEventListener('DOMLoaded', () => {
                 this.setSVGAttr(this.$refs.bg.firstChild);
@@ -218,7 +225,7 @@ export default {
                 renderer: 'svg',
                 loop: true,
                 autoplay: true,
-                animationData: peopleLeftData
+                animationData: this.tabletWidth ? peopleLeftDataMb : peopleLeftData
             });
 
             // peopleRight
@@ -227,16 +234,18 @@ export default {
                 renderer: 'svg',
                 loop: true,
                 autoplay: true,
-                animationData: peopleRightData
+                animationData: this.tabletWidth ? peopleRightDataMb : peopleRightData
             });
 
+            const delayTime = this.ignoreOpening || this.animPlayed ? 0 : 4000; // 4s: 2.5s gacha animation delay + 1.5s
             setTimeout(() => {
                 gachaAnim.play();
                 bgAnim.play();
-            }, 4000); // 2.5s gacha animation delay + 1.5s
+                this.animPlayed = true;
+            }, delayTime);
         },
         setSVGAttr (el) {
-            el.setAttribute('preserveAspectRatio', 'xMidYMid slice'); // slice:滿版
+            el.setAttribute('preserveAspectRatio', 'xMidYMid slice'); // slice: 滿版
         }
     }
 };
@@ -269,7 +278,12 @@ main {
     z-index: map-get($z-index, gacha-svg);
     margin: auto;
     width: 400px;
-    animation: popup .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &.bounceIn {
+        animation: popup .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both;
+    }
 }
 @keyframes popup {
     from {

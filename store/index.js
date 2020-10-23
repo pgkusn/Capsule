@@ -7,7 +7,8 @@ export const state = () => ({
     userToken: '',
     history: null,
     drawRange: null,
-    drawResult: null
+    drawResult: null,
+    ignoreOpening: false
 });
 
 export const mutations = {
@@ -28,6 +29,9 @@ export const mutations = {
     },
     setDrawResult (state, payload) {
         state.drawResult = payload;
+    },
+    setIgnoreOpening (state) {
+        state.ignoreOpening = true;
     }
 };
 
@@ -62,6 +66,7 @@ export const actions = {
         });
     },
     async draw ({ commit }) {
+        commit('setDrawResult', null);
         const form = new FormData();
         form.append('_user_token', this._vm.$Cookies.get('_user_token'));
         const { data } = await this.$axios({
