@@ -114,6 +114,7 @@ export default {
 @import '@/assets/sass/common';
 
 .share {
+    position: relative;
     > div {
         padding-top: percentage(757/1294);
         width: 100%;
@@ -121,24 +122,16 @@ export default {
         background-size: contain;
     }
     &__btn {
-        @include vw-size(1920, 175, 85);
+        @include vw-size(1294, 175, 85);
         position: absolute;
         @at-root {
             .is-shared .share__btn {
-                top: vw(448, 1920);
-                right: vw(233, 1920);
-                @media (min-width: #{$desktop-width + 1}px) {
-                    top: 448px;
-                    right: 233px;
-                }
+                top: percentage(448/757);
+                right: percentage(233/1294);
             }
             .no-shared .share__btn {
-                top: vw(448, 1920);
-                right: vw(175, 1920);
-                @media (min-width: #{$desktop-width + 1}px) {
-                    top: 448px;
-                    right: 175px;
-                }
+                top: percentage(448/757);
+                right: percentage(175/1294);
             }
         }
     }

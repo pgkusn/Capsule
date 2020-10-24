@@ -20,20 +20,19 @@
                         </div>
                     </li>
                     <li>
-                        <hgroup class="content__title">
-                            <h1><img src="@/assets/images/title.png" alt="1111 驚喜扭扭樂"></h1>
-                            <h2><img src="@/assets/images/subtitle.png" alt="台劇華劇扭起來！Vidol 11人VIP歡樂看、11日VIP體驗序號及超多折扣!"></h2>
-                        </hgroup>
+                        <div class="content__title">
+                            <hgroup>
+                                <h1><img src="@/assets/images/title.png" alt="1111 驚喜扭扭樂"></h1>
+                                <h2><img src="@/assets/images/subtitle.png" alt="台劇華劇扭起來！Vidol 11人VIP歡樂看、11日VIP體驗序號及超多折扣!"></h2>
+                            </hgroup>
+                            <button class="warning-btn" @click.prevent="setCurrentPopup('Warning')" />
+                        </div>
                         <div ref="peopleRight" />
-                        <button class="draw-btn" @click.prevent="setCurrentPopup('Draw')">
+                        <button @click.prevent="setCurrentPopup('Draw')">
                             <img src="@/assets/images/btn-draw.png" alt="快扭我">
                         </button>
                     </li>
                 </ul>
-
-                <button class="warning-btn" @click.prevent="setCurrentPopup('Warning')">
-                    <img src="https://fakeimg.pl/295x97/?text=活動注意事項&font=noto" style="border-radius:50px" alt="活動注意事項">
-                </button>
             </div>
 
             <transition name="fade">
@@ -276,9 +275,9 @@ main {
     bottom: 0;
     left: 0;
     z-index: map-get($z-index, gacha-svg);
+    display: flex;
     margin: auto;
     width: 400px;
-    display: flex;
     justify-content: center;
     align-items: center;
     &.bounceIn {
@@ -323,9 +322,34 @@ main {
     }
     &__title {
         margin-bottom: vw(100, $desktop-width);
-        > h2 {
+        align-self: flex-start;
+        h2 {
             margin-top: 30px;
             padding-left: 16px;
+        }
+        button {
+            display: flex;
+            margin-top: 20px;
+            align-items: center;
+            &::before {
+                margin-right: 5px;
+                width: 0;
+                height: 0;
+                border-width: 14px 0 14px 19px;
+                border-style: solid;
+                border-color: transparent transparent transparent #000;
+                content: '';
+            }
+            &::after {
+                width: 125px;
+                background-color: #000;
+                color: #fff;
+                content: '活動說明';
+                text-align: center;
+                letter-spacing: letter-spacing(10);
+                font-size: 25px;
+                line-height: 42px;
+            }
         }
     }
 }
@@ -334,12 +358,5 @@ main {
 }
 .draw-btn {
     width: vw(346, $desktop-width);
-}
-.warning-btn {
-    position: absolute;
-    top: 20%;
-    left: 10%;
-    z-index: map-get($z-index, nav);
-    width: vw(295, $desktop-width);
 }
 </style>

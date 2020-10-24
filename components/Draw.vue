@@ -65,6 +65,7 @@ export default {
 @import '@/assets/sass/common';
 
 .draw {
+    position: relative;
     > div {
         padding-top: percentage(757/1294);
         width: 100%;
@@ -75,40 +76,24 @@ export default {
         position: absolute;
         @at-root {
             [class^=reward] .draw__btn {
-                @include vw-size(1920, 455, 97);
-                top: vw(447, 1920);
-                right: vw(123, 1920);
-                @media (min-width: #{$desktop-width + 1}px) {
-                    top: 447px;
-                    right: 123px;
-                }
+                @include vw-size(1294, 455, 97);
+                top: percentage(447/757);
+                right: percentage(123/1294);
             }
             .lose .draw__btn {
-                @include vw-size(1920, 517, 93);
-                top: vw(448, 1920);
-                right: vw(60, 1920);
-                @media (min-width: #{$desktop-width + 1}px) {
-                    top: 448px;
-                    right: 60px;
-                }
+                @include vw-size(1294, 517, 93);
+                top: percentage(448/757);
+                right: percentage(60/1294);
             }
             .normal .draw__btn {
-                @include vw-size(1920, 398, 94);
-                top: vw(448, 1920);
-                right: vw(147, 1920);
-                @media (min-width: #{$desktop-width + 1}px) {
-                    top: 448px;
-                    right: 147px;
-                }
+                @include vw-size(1294, 398, 94);
+                top: percentage(448/757);
+                right: percentage(147/1294);
             }
             .goshare .draw__btn {
-                @include vw-size(1920, 517, 93);
-                top: vw(450, 1920);
-                right: vw(60, 1920);
-                @media (min-width: #{$desktop-width + 1}px) {
-                    top: 450px;
-                    right: 60px;
-                }
+                @include vw-size(1294, 517, 93);
+                top: percentage(450/757);
+                right: percentage(60/1294);
             }
         }
     }

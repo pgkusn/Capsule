@@ -1,8 +1,8 @@
 <template>
     <div class="popup">
         <div class="popup__content">
-            <div id="popupClose" class="popup__close" @click="closePopup" />
             <slot />
+            <div id="popupClose" class="popup__close" @click="closePopup" />
         </div>
         <div class="popup__overlay" @click="closePopup" />
     </div>
@@ -34,7 +34,7 @@ export default {
 @import '@/assets/sass/common';
 
 .popup {
-    position: fixed !important;
+    position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
@@ -43,43 +43,49 @@ export default {
     display: flex;
     overflow: auto;
     &__content {
-        @include vw-size(1920, 1294);
         position: relative;
-        top: -40px; // footer height / 2
         z-index: 1;
+        box-sizing: content-box;
         margin: auto;
-        @media (max-width: #{$tablet-width}px) {
-            top: -22.5px; // footer height / 2
-        }
+        padding: 30px;
+        max-width: 1294px;
+        width: 100%;
     }
     &__close {
-        @include vw-size(1920, 100, 100);
         position: absolute;
-        top: 0;
-        right: 0;
+        top: 36px;
+        right: 36px;
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
         cursor: pointer;
-        // background-color: rgba(#000, .5);
-        // display: flex;
-        // box-sizing: content-box;
-        // border: vw(10, 1920) solid #ed2828;
-        // transform: rotate(45deg);
-        // &::before,
-        // &::after {
-        //     @include vw-size(1920, 53, 10);
-        //     position: absolute;
-        //     top: 0;
-        //     right: 0;
-        //     bottom: 0;
-        //     left: 0;
-        //     margin: auto;
-        //     border-radius: 5px;
-        //     background-color: #fff;
-        //     content: '';
-        // }
-        // &::before {
-        //     transform: rotate(90deg);
-        // }
+        @at-root {
+            .warning + .popup__close {
+                display: flex;
+                box-sizing: content-box;
+                width: 63px;
+                height: 63px;
+                background-color: #fff;
+                transform: rotate(45deg);
+                &::before,
+                &::after {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    margin: auto;
+                    width: 38px;
+                    height: 5px;
+                    border-radius: 5px;
+                    background-color: #9a9a9a;
+                    content: '';
+                }
+                &::before {
+                    transform: rotate(90deg);
+                }
+            }
+        }
     }
     &__overlay {
         position: fixed;

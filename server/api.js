@@ -40,7 +40,7 @@ app.post(API.drawRange.url, async (req, res) => {
     console.log(formData);
     res.status(200);
     res.json({
-        draw: true,
+        draw: false,
         share: false
     });
     // res.status(400);
