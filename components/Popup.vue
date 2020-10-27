@@ -60,29 +60,47 @@ export default {
         border-radius: 50%;
         cursor: pointer;
         @at-root {
+            .warning,
+            .history {
+                + .popup__close {
+                    display: flex;
+                    box-sizing: content-box;
+                    width: 63px;
+                    height: 63px;
+                    transform: rotate(45deg);
+                    &::before,
+                    &::after {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        left: 0;
+                        margin: auto;
+                        width: 38px;
+                        height: 5px;
+                        border-radius: 5px;
+                        content: '';
+                    }
+                    &::before {
+                        transform: rotate(90deg);
+                    }
+                }
+            }
             .warning + .popup__close {
-                display: flex;
-                box-sizing: content-box;
-                width: 63px;
-                height: 63px;
                 background-color: #fff;
-                transform: rotate(45deg);
                 &::before,
                 &::after {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    left: 0;
-                    margin: auto;
-                    width: 38px;
-                    height: 5px;
-                    border-radius: 5px;
                     background-color: #9a9a9a;
-                    content: '';
                 }
-                &::before {
-                    transform: rotate(90deg);
+            }
+            .history + .popup__close {
+                top: 33px;
+                right: 33px;
+                border: 10px solid #472fff;
+                background-color: #000;
+                &::before,
+                &::after {
+                    background-color: #fff;
                 }
             }
         }

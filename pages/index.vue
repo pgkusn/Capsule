@@ -1,6 +1,7 @@
 <template>
-    <div class="main-container">
+    <div class="index">
         <div v-if="!ignoreOpening" ref="intro" class="intro" />
+
         <main>
             <div ref="gacha" class="gacha" :class="{ bounceIn: !ignoreOpening }" />
 
@@ -10,7 +11,7 @@
                 <ul>
                     <li>
                         <div ref="peopleLeft" />
-                        <div class="content__btn-group">
+                        <div class="btn-group">
                             <button class="history-btn" @click.prevent="setCurrentPopup('History')">
                                 <img src="@/assets/images/btn-history.png" alt="中獎紀錄">
                             </button>
@@ -23,29 +24,35 @@
                         <div class="content__title">
                             <hgroup>
                                 <h1><img src="@/assets/images/title.png" alt="1111 驚喜扭扭樂"></h1>
-                                <h2><img src="@/assets/images/subtitle.png" alt="台劇華劇扭起來！Vidol 11人VIP歡樂看、11日VIP體驗序號及超多折扣!"></h2>
+                                <h2>
+                                    <picture>
+                                        <source media="(max-width: 768px)" srcset="@/assets/images/subtitle-s@2x.png 2x, @/assets/images/subtitle-s@3x.png 3x">
+                                        <img src="@/assets/images/subtitle.png" alt="台劇華劇扭起來！Vidol 11人VIP歡樂看、11日VIP體驗序號及超多折扣!">
+                                    </picture>
+                                </h2>
                             </hgroup>
                             <button class="warning-btn" @click.prevent="setCurrentPopup('Warning')" />
                         </div>
                         <div ref="peopleRight" />
-                        <button @click.prevent="setCurrentPopup('Draw')">
+                        <button class="draw-btn" @click.prevent="setCurrentPopup('Draw')">
                             <img src="@/assets/images/btn-draw.png" alt="快扭我">
                         </button>
                     </li>
                 </ul>
             </div>
-
-            <transition name="fade">
-                <Popup v-if="showPopup" v-model="showPopup">
-                    <component :is="currentPopup" />
-                </Popup>
-            </transition>
         </main>
+
+        <transition name="fade">
+            <Popup v-if="showPopup" v-model="showPopup">
+                <component :is="currentPopup" />
+            </Popup>
+        </transition>
     </div>
 </template>
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex';
+
 import gachaData from '@/static/lottieData/gacha.json';
 import introData from '@/static/lottieData/intro.json';
 import introDataMb from '@/static/lottieData/intro-s.json';
@@ -55,6 +62,7 @@ import peopleLeftData from '@/static/lottieData/people-left.json';
 import peopleLeftDataMb from '@/static/lottieData/people-left-s.json';
 import peopleRightData from '@/static/lottieData/people-right.json';
 import peopleRightDataMb from '@/static/lottieData/people-right-s.json';
+
 import Warning from '@/components/Warning.vue';
 import Popup from '@/components/Popup.vue';
 import History from '@/components/History.vue';
@@ -115,7 +123,7 @@ export default {
         }
     },
     mounted () {
-        this.setIgnoreOpening(); // debug
+        // this.setIgnoreOpening(); // debug
 
         // open popup after login
         const currentPopup = localStorage.getItem('returnPopup');
@@ -140,7 +148,8 @@ export default {
                     this.$swal({
                         icon: 'info',
                         title: '請先登入 Vidol 會員',
-                        confirmButtonText: '立即登入'
+                        confirmButtonText: '立即登入',
+                        heightAuto: false
                     }).then((result) => {
                         if (result.isConfirmed) {
                             this.redirectToLogin();
@@ -253,11 +262,11 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/sass/common';
 
-main {
-    position: relative;
+.index {
     height: 100%;
 }
-.main-container {
+main {
+    position: relative;
     height: 100%;
 }
 .intro,
@@ -277,9 +286,13 @@ main {
     z-index: map-get($z-index, gacha-svg);
     display: flex;
     margin: auto;
-    width: 400px;
+    width: vw(385, $desktop-width);
+    pointer-events: none;
     justify-content: center;
     align-items: center;
+    @media (max-width: #{$tablet-width}px) {
+        width: vw(140, $mobile-width);
+    }
     &.bounceIn {
         animation: popup .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both;
     }
@@ -304,59 +317,119 @@ main {
         z-index: map-get($z-index, nav);
         display: flex;
         width: 100%;
-        transform: translateY(-40%);
-        justify-content: space-between;
+        transform: translateY(-50%);
+        justify-content: center;
         align-items: flex-end;
+        @media (max-height: 869px) {
+            transform: translateY(-50%);
+        }
+        @media (max-width: #{$tablet-width}px) {
+            top: 0;
+            height: 100%;
+            transform: none;
+        }
     }
     li {
         display: flex;
         flex-direction: column;
         height: 100%;
         align-items: center;
+        @media (max-width: #{$tablet-width}px) {
+            justify-content: center;
+        }
         + li {
-            margin-left: 400px;
+            margin-left: vw(385, $desktop-width);
+            @media (max-width: #{$tablet-width}px) {
+                margin-left: vw(134, $mobile-width);
+            }
         }
     }
-    &__btn-group {
-        display: flex;
-    }
     &__title {
-        margin-bottom: vw(100, $desktop-width);
+        margin: 0 0 vw(50, $desktop-width) 20px;
         align-self: flex-start;
+        @media (max-width: #{$tablet-width}px) {
+            position: absolute;
+            top: calc(50% - #{vw(105, $mobile-width)} - 123px);
+            left: 50%;
+            margin: 0;
+            transform: translateX(-50%);
+        }
+        h1 {
+            @media (max-width: #{$tablet-width}px) {
+                margin: 0 auto;
+                width: 270px;
+            }
+        }
         h2 {
             margin-top: 30px;
             padding-left: 16px;
-        }
-        button {
-            display: flex;
-            margin-top: 20px;
-            align-items: center;
-            &::before {
-                margin-right: 5px;
-                width: 0;
-                height: 0;
-                border-width: 14px 0 14px 19px;
-                border-style: solid;
-                border-color: transparent transparent transparent #000;
-                content: '';
-            }
-            &::after {
-                width: 125px;
-                background-color: #000;
-                color: #fff;
-                content: '活動說明';
-                text-align: center;
-                letter-spacing: letter-spacing(10);
-                font-size: 25px;
-                line-height: 42px;
+            @media (max-width: #{$tablet-width}px) {
+                margin: 10px auto 0;
+                padding-left: 0;
+                width: 310px;
             }
         }
+    }
+}
+.btn-group {
+    display: flex;
+    @media (max-width: #{$tablet-width}px) {
+        position: absolute;
+        top: calc(50% + #{vw(115, $mobile-width)} + 60px);
+        left: 50%;
+        width: 335px;
+        transform: translateX(-50%);
     }
 }
 .share-btn {
     margin-left: 20px;
 }
 .draw-btn {
-    width: vw(346, $desktop-width);
+    width: vw(346, 1880);
+    @media (max-width: #{$tablet-width}px) {
+        position: absolute;
+        top: calc(50% + #{vw(115, $mobile-width)});
+        left: 50%;
+        width: 195px;
+        transform: translateX(-50%);
+    }
+}
+.warning-btn {
+    display: flex;
+    margin: 20px 0 0 20px;
+    align-items: center;
+    @media (max-width: #{$tablet-width}px) {
+        position: absolute;
+        top: calc(100% + #{vw(25, $mobile-width)});
+        left: calc(50% + #{vw(70, $mobile-width)});
+        margin: 0;
+    }
+    &::before {
+        margin-right: 5px;
+        width: 0;
+        height: 0;
+        border-width: 14px 0 14px 19px;
+        border-style: solid;
+        border-color: transparent transparent transparent #000;
+        content: '';
+        @media (max-width: #{$tablet-width}px) {
+            border-width: 8px 0 8px 12px;
+        }
+    }
+    &::after {
+        width: 125px;
+        background-color: #000;
+        color: #fff;
+        content: '活動說明';
+        text-align: center;
+        letter-spacing: letter-spacing(10);
+        font-size: 25px;
+        line-height: 42px;
+        @media (max-width: #{$tablet-width}px) {
+            width: 76px;
+            font-size: 14px;
+            line-height: 26px;
+        }
+    }
 }
 </style>

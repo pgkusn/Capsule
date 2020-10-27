@@ -1,9 +1,9 @@
 $desktop-width: 1920 !default;
 $content-width: 1440 !default;
 $tablet-width: 768 !default;
-$mobile-width: 414 !default;
+$mobile-width: 375 !default;
 $z-index: (
     gacha-svg: 1,
     nav: 2,
-    popup: 10
+    popup: 20
 );

@@ -26,7 +26,7 @@ app.post(API.history.url, async (req, res) => {
         {
             reward: '獎項2',
             number: '獎項序號2',
-            exchange: true,
+            exchange: false,
             url: 'https://'
         }
     ]);

@@ -29,6 +29,10 @@ export default {
                 type: 'image/x-icon',
                 href:
                     'https://vidol.tv/assets/resource/image/favicon-d991863699ba9886821ddf6ad1914a8f67ada3f48ea891c4772d95a69398cfd9.png'
+            },
+            {
+                rel: 'stylesheet',
+                href: 'https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap'
             }
         ],
         script: [

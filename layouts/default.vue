@@ -54,7 +54,11 @@ export default {
 @import '@/assets/sass/common';
 
 html,
-body {
+body,
+#__nuxt,
+#__layout,
+.app,
+.app__content {
     height: 100%;
 }
 body {
@@ -88,10 +92,8 @@ body {
 .app {
     position: relative;
     margin: 0 auto;
-    min-height: 100vh;
     &__content {
         padding-bottom: 80px;
-        height: 100vh;
         @media (max-width: #{$tablet-width}px) {
             padding-bottom: 45px;
         }
@@ -105,10 +107,7 @@ a.logo {
     width: vw(185, $desktop-width);
     background: url('~@/assets/images/logo.png') 0 50% / contain no-repeat;
     @media (max-width: #{$tablet-width}px) {
-        top: vw(21, $tablet-width);
-        left: 50%;
         width: vw(128, $tablet-width);
-        transform: translateX(-50%);
     }
     &::before {
         display: block;
@@ -125,6 +124,11 @@ a.logo {
     }
     to {
         opacity: 1;
+    }
+}
+.swal2-title {
+    @media (max-width: #{$tablet-width}px) {
+        font-size: 1.7em !important;
     }
 }
 </style>
