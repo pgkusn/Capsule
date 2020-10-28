@@ -5,7 +5,7 @@
                 href="https://vidol.tv/"
                 target="_blank"
                 class="logo"
-                :class="{ fadeIn: !ignoreOpening }"
+                :class="{ fadeIn: !ignoreOpening, running: loaded }"
             />
             <nuxt />
         </div>
@@ -28,7 +28,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(['ignoreOpening']),
+        ...mapState(['ignoreOpening', 'loaded']),
         isMobile () {
             return this.$device.isMobile;
         }
@@ -116,7 +116,7 @@ a.logo {
     }
 }
 .fadeIn {
-    animation: fadeIn .5s 4s both;
+    animation: fadeIn .5s 4s both paused;
 }
 @keyframes fadeIn {
     from {
@@ -125,6 +125,9 @@ a.logo {
     to {
         opacity: 1;
     }
+}
+.running {
+    animation-play-state: running !important;
 }
 .swal2-title {
     @media (max-width: #{$tablet-width}px) {

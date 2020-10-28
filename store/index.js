@@ -8,7 +8,8 @@ export const state = () => ({
     history: null,
     drawRange: null,
     drawResult: null,
-    ignoreOpening: false
+    ignoreOpening: false,
+    loaded: false
 });
 
 export const mutations = {
@@ -32,6 +33,9 @@ export const mutations = {
     },
     setIgnoreOpening (state) {
         state.ignoreOpening = true;
+    },
+    setLoaded (state) {
+        state.loaded = true;
     }
 };
 
@@ -75,37 +79,5 @@ export const actions = {
             data: form
         });
         commit('setDrawResult', data);
-    },
-    preloadImg (context, imgs) {
-        return new Promise(resolve => {
-            //  if empty array, do resolve
-            if (!imgs.length) resolve();
-
-            let loaded = 0;
-            for (let i = 0; i < imgs.length; i++) {
-                const element = imgs[i];
-
-                // if not image url, do continue
-                if (typeof element !== 'string' && element) {
-                    loaded++;
-                    continue;
-                }
-
-                const img = document.createElement('IMG');
-                img.src = element;
-                img.onload = () => {
-                    loaded++;
-                    if (loaded === imgs.length) {
-                        resolve();
-                    }
-                };
-                img.onerror = () => {
-                    loaded++;
-                    if (loaded === imgs.length) {
-                        resolve();
-                    }
-                };
-            }
-        });
     }
 };

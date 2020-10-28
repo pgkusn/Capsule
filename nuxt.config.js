@@ -40,6 +40,10 @@ export default {
                 src:
                     'https://polyfill.io/v3/polyfill.js?features=default,fetch,HTMLPictureElement,Array.prototype.find,NodeList.prototype.forEach,URL,URLSearchParams,smoothscroll&flags=gated',
                 defer: 'defer'
+            },
+            {
+                src: 'https://code.createjs.com/1.0.0/preloadjs.min.js',
+                defer: 'defer'
             }
         ]
     },

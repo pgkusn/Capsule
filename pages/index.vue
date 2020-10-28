@@ -3,11 +3,11 @@
         <div v-if="!ignoreOpening" ref="intro" class="intro" />
 
         <main>
-            <div ref="gacha" class="gacha" :class="{ bounceIn: !ignoreOpening }" />
+            <div ref="gacha" class="gacha" :class="{ bounceIn: !ignoreOpening, running: loaded }" />
 
-            <div ref="bg" class="bg" :class="{ fadeIn: !ignoreOpening }" />
+            <div ref="bg" class="bg" :class="{ fadeIn: !ignoreOpening, running: loaded }" />
 
-            <div class="content container" :class="{ fadeIn: !ignoreOpening }">
+            <div class="content container" :class="{ fadeIn: !ignoreOpening, running: loaded }">
                 <ul>
                     <li>
                         <div ref="peopleLeft" />
@@ -23,7 +23,9 @@
                     <li>
                         <div class="content__title">
                             <hgroup>
-                                <h1><img src="@/assets/images/title.png" alt="1111 驚喜扭扭樂"></h1>
+                                <h1>
+                                    <img src="@/assets/images/title.png" alt="1111 驚喜扭扭樂">
+                                </h1>
                                 <h2>
                                     <picture>
                                         <source media="(max-width: 768px)" srcset="@/assets/images/subtitle-s@2x.png 2x, @/assets/images/subtitle-s@3x.png 3x">
@@ -52,7 +54,15 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+import Warning from '@/components/Warning.vue';
+import Popup from '@/components/Popup.vue';
+import History from '@/components/History.vue';
+import Draw from '@/components/Draw.vue';
+import Share from '@/components/Share.vue';
 
+// lottie data
 import gachaData from '@/static/lottieData/gacha.json';
 import introData from '@/static/lottieData/intro.json';
 import introDataMb from '@/static/lottieData/intro-s.json';
@@ -62,12 +72,6 @@ import peopleLeftData from '@/static/lottieData/people-left.json';
 import peopleLeftDataMb from '@/static/lottieData/people-left-s.json';
 import peopleRightData from '@/static/lottieData/people-right.json';
 import peopleRightDataMb from '@/static/lottieData/people-right-s.json';
-
-import Warning from '@/components/Warning.vue';
-import Popup from '@/components/Popup.vue';
-import History from '@/components/History.vue';
-import Draw from '@/components/Draw.vue';
-import Share from '@/components/Share.vue';
 
 export default {
     name: 'Index',
@@ -85,7 +89,14 @@ export default {
         };
     },
     computed: {
-        ...mapState(['tabletWidth', 'currentPopup', 'history', 'drawRange', 'ignoreOpening'])
+        ...mapState([
+            'tabletWidth',
+            'currentPopup',
+            'history',
+            'drawRange',
+            'ignoreOpening',
+            'loaded'
+        ])
     },
     watch: {
         async currentPopup (popupType) {
@@ -117,8 +128,17 @@ export default {
 
             this.showPopup = true;
         },
-        tabletWidth (value) {
+        async tabletWidth (value) {
             this.$lottie.destroy();
+
+            // preload image
+            if (!this.animPlayed) {
+                NProgress.start();
+                await this.preloadImg();
+                this.setLoaded();
+                NProgress.done();
+            }
+
             this.initLottie();
         }
     },
@@ -134,8 +154,18 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['setCurrentPopup', 'setUserToken', 'setIgnoreOpening']),
-        ...mapActions(['getHistory', 'getDrawRange', 'share', 'draw', 'preloadImg']),
+        ...mapMutations([
+            'setCurrentPopup',
+            'setUserToken',
+            'setIgnoreOpening',
+            'setLoaded'
+        ]),
+        ...mapActions([
+            'getHistory',
+            'getDrawRange',
+            'share',
+            'draw'
+        ]),
         checkLogin () {
             return new Promise((resolve, reject) => {
                 const userToken = this.$Cookies.get('_user_token');
@@ -177,11 +207,7 @@ export default {
                 return;
             }
 
-            this.$Cookies.set(
-                'user_signed_in_redirect_to',
-                location.origin + location.pathname,
-                { domain: 'vidol.tv' }
-            );
+            this.$Cookies.set('user_signed_in_redirect_to', location.origin + location.pathname, { domain: 'vidol.tv' });
             const redirectUrl = {
                 sit: 'https://webtest.vidol.tv/login',
                 prod: 'https://vidol.tv/login'
@@ -253,6 +279,29 @@ export default {
         },
         setSVGAttr (el) {
             el.setAttribute('preserveAspectRatio', 'xMidYMid slice'); // slice: 滿版
+        },
+        preloadImg () {
+            return new Promise((resolve, reject) => {
+                const files = [];
+                for (let i = 0; i <= 129; i++) {
+                    files.push(`images/intro${this.tabletWidth ? '-s' : ''}/seq_0_${i}.jpg`);
+                }
+                for (let i = 0; i <= 149; i++) {
+                    files.push(`images/bg${this.tabletWidth ? '-s' : ''}/seq_0_${i}.jpg`);
+                }
+                for (let i = 0; i <= 14; i++) {
+                    files.push(`images/people-left${this.tabletWidth ? '-s' : ''}/img_${i}.png`);
+                }
+                for (let i = 0; i <= 14; i++) {
+                    files.push(`images/people-right${this.tabletWidth ? '-s' : ''}/img_${i}.png`);
+                }
+                for (let i = 0; i <= 17; i++) {
+                    files.push(`images/gacha/img_${i}.png`);
+                }
+                const queue = new createjs.LoadQueue();
+                queue.loadManifest(files);
+                queue.on('complete', () => resolve());
+            });
         }
     }
 };
@@ -293,7 +342,7 @@ main {
         width: vw(140, $mobile-width);
     }
     &.bounceIn {
-        animation: popup .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both;
+        animation: popup .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both paused;
     }
 }
 @keyframes popup {
