@@ -132,7 +132,7 @@ export default {
             this.$lottie.destroy();
 
             // preload image
-            if (!this.animPlayed) {
+            if (!this.animPlayed && !this.ignoreOpening) {
                 NProgress.start();
                 await this.preloadImg();
                 this.setLoaded();
