@@ -85,10 +85,10 @@ export const actions = {
             for (let i = 0; i < imgs.length; i++) {
                 const element = imgs[i];
 
-                // if not image, do break
-                if (!element) {
+                // if not image url, do continue
+                if (typeof element !== 'string' && element) {
                     loaded++;
-                    break;
+                    continue;
                 }
 
                 const img = document.createElement('IMG');
@@ -96,9 +96,13 @@ export const actions = {
                 img.onload = () => {
                     loaded++;
                     if (loaded === imgs.length) {
-                        setTimeout(() => {
-                            resolve();
-                        }, 2000);
+                        resolve();
+                    }
+                };
+                img.onerror = () => {
+                    loaded++;
+                    if (loaded === imgs.length) {
+                        resolve();
                     }
                 };
             }
