@@ -72,6 +72,10 @@ $base-color: #472fff;
     border-style: solid;
     border-color: $base-color;
     background-color: #fff;
+    @media (max-width: #{$tablet-width}px) {
+        padding: 13px 0 31px;
+        border-width: 13px;
+    }
     > div {
         display: flex;
         flex-direction: column;
@@ -84,14 +88,23 @@ $base-color: #472fff;
         align-items: center;
         > h1 {
             width: 442px;
+            @media (max-width: #{$tablet-width}px) {
+                width: 200px;
+            }
         }
         > h2 {
             margin: 10px 0;
             width: 211px;
+            @media (max-width: #{$tablet-width}px) {
+                width: 106px;
+            }
         }
         > h3 {
             font-size: 20px;
             font-family: 'Noto Sans TC', sans-serif;
+            @media (max-width: #{$tablet-width}px) {
+                font-size: 16px;
+            }
         }
     }
     &__list {
@@ -102,6 +115,9 @@ $base-color: #472fff;
             padding-bottom: 10px;
             letter-spacing: letter-spacing(50);
             font-size: 25px;
+            @media (max-width: #{$tablet-width}px) {
+                font-size: 14px;
+            }
         }
         tbody {
             tr + tr {
@@ -109,9 +125,12 @@ $base-color: #472fff;
             }
             td {
                 position: relative;
-                padding: .5em;
+                padding: 10px 5px;
                 vertical-align: middle;
                 font-size: 18px;
+                @media (max-width: #{$tablet-width}px) {
+                    font-size: 12px;
+                }
                 &::before {
                     position: absolute;
                     top: 50%;
@@ -127,9 +146,15 @@ $base-color: #472fff;
                         }
                         .history__list tbody td:first-child::before {
                             border-radius: 10px 0  0 10px;
+                            @media (max-width: #{$tablet-width}px) {
+                                border-radius: 0;
+                            }
                         }
                         .history__list tbody td:last-child::before {
                             border-radius: 0 10px 10px 0;
+                            @media (max-width: #{$tablet-width}px) {
+                                border-radius: 0;
+                            }
                         }
                     }
                 }
@@ -145,13 +170,22 @@ $base-color: #472fff;
             height: 35px;
             border: 3px solid $base-color;
             border-radius: 50%;
+            @media (max-width: #{$tablet-width}px) {
+                width: 30px;
+                height: 30px;
+            }
             &.checked::before {
                 display: block;
                 width: 34px;
                 height: 30px;
                 background-image: url('~@/assets/images/history-status.png');
+                background-size: contain;
                 content: '';
                 transform: translate(5px, -5px);
+                @media (max-width: #{$tablet-width}px) {
+                    width: 28px;
+                    height: 25px;
+                }
             }
         }
         &--link {
@@ -168,6 +202,10 @@ $base-color: #472fff;
                 @media (min-resolution: 3dppx) {
                     background-image: url('~@/assets/images/history-link@3x.png');
                 }
+                @media (max-width: #{$tablet-width}px) {
+                    width: 30px;
+                    height: 30px;
+                }
             }
         }
     }
@@ -177,6 +215,10 @@ $base-color: #472fff;
             width: 36px;
             height: 36px;
             background-color: $base-color;
+            @media (max-width: #{$tablet-width}px) {
+                width: 26px;
+                height: 26px;
+            }
             &:nth-child(1) {
                 top: 0;
                 left: 0;

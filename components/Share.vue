@@ -1,6 +1,6 @@
 <template>
     <div class="share">
-        <div v-if="drawRange" :class="popupClass" :style="{ backgroundImage: popupClass && `url(images/popup-bg/${popupClass}.jpg)` }">
+        <div v-if="drawRange" :class="popupClass" :style="{ backgroundImage: popupFileName && `url(images/popup-bg/${popupFileName}.jpg)` }">
             <a href class="share__btn" @click.prevent="fbShare">
                 <img src="@/assets/images/share_fb.png" alt="">
             </a>
@@ -27,9 +27,12 @@ export default {
         };
     },
     computed: {
-        ...mapState(['drawRange']),
+        ...mapState(['tabletWidth', 'drawRange']),
         popupClass () {
             return this.drawRange.draw && this.drawRange.share ? 'is-shared' : 'no-shared';
+        },
+        popupFileName () {
+            return this.popupClass ? this.tabletWidth ? `${this.popupClass}-s` : this.popupClass : '';
         }
     },
     watch: {
@@ -120,18 +123,34 @@ export default {
         width: 100%;
         background-color: #fff;
         background-size: contain;
+        @media (max-width: #{$tablet-width}px) {
+            padding-top: percentage(1045/748);
+        }
     }
     &__btn {
-        @include vw-size(1294, 175, 85);
         position: absolute;
+        width: percentage(175/1294);
+        height: percentage(85/757);
+        @media (max-width: #{$tablet-width}px) {
+            width: percentage(191/748);
+            height: percentage(93/1045);
+        }
         @at-root {
             .is-shared .share__btn {
                 top: percentage(448/757);
                 right: percentage(233/1294);
+                @media (max-width: #{$tablet-width}px) {
+                    top: percentage(657/1045);
+                    right: percentage(277/748);
+                }
             }
             .no-shared .share__btn {
                 top: percentage(448/757);
                 right: percentage(175/1294);
+                @media (max-width: #{$tablet-width}px) {
+                    top: percentage(657/1045);
+                    right: percentage(277/748);
+                }
             }
         }
     }

@@ -5,7 +5,7 @@
                 <img src="@/assets/images/warning-title.png" alt="注意事項">
             </h1>
             <div class="warning__content">
-                <p>即日起打開Vidol登入會員，開始進行扭扭樂，台劇、華劇扭起來!每一會員帳號每日可玩一次，分享遊戲 至社群，可再獲得一次遊戲機會。</p>
+                <p>即日起打開Vidol登入會員，開始進行扭扭樂，台劇、華劇扭起來！每一會員帳號每日可玩一次，<br>分享遊戲至社群，可再獲得一次遊戲機會。</p>
                 <ul>
                     <li>獎項內容: Vidol 11人VIP歡樂看、 11日VIP體驗序號、 111元折扣、 11%折扣、 11元折扣。</li>
                     <li>按下「快扭我」進行遊戲，所有中獎紀錄及中獎序號皆顯示於「我的中獎紀錄」。</li>
@@ -38,28 +38,48 @@ export default {
     padding: 70px;
     border-radius: 20px;
     background-color: $bg-color;
+    @media (max-width: #{$tablet-width}px) {
+        padding: 15px;
+    }
     &__container {
         position: relative;
         border: 4px dashed #fff;
         border-radius: 10px;
         background-color: #e6e6e6;
         box-shadow: 0 0 0 8px $bg-color, 0 0 0 13px #fff;
+        @media (max-width: #{$tablet-width}px) {
+            box-shadow: 0 0 0 5px $bg-color, 0 0 0 7px #fff;
+        }
     }
     &__title {
         position: absolute;
         top: -30px;
         left: 50%;
         transform: translateX(-50%);
+        @media (max-width: #{$tablet-width}px) {
+            top: -13px;
+            width: 115px;
+        }
     }
     &__content {
         padding: 50px 60px;
         letter-spacing: letter-spacing(10);
         font-size: 20px;
         line-height: 36px;
+        @media (max-width: #{$tablet-width}px) {
+            padding: 1.5em 1em 1em;
+            letter-spacing: letter-spacing(10);
+            font-size: 12px;
+            line-height: 18px;
+        }
         > p {
-            margin: 0 auto;
-            max-width: 865px;
             text-align: center;
+            @media (max-width: #{$tablet-width}px) {
+                margin: 0 1em 1em;
+                > br {
+                    display: none;
+                }
+            }
         }
         > ul {
             padding-left: 1.5em;

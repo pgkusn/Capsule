@@ -27,7 +27,7 @@
                                 <h2>
                                     <picture>
                                         <source media="(max-width: 768px)" srcset="@/assets/images/subtitle-s@2x.png 2x, @/assets/images/subtitle-s@3x.png 3x">
-                                        <img src="@/assets/images/subtitle.png" alt="台劇華劇扭起來！Vidol 11人VIP歡樂看、11日VIP體驗序號及超多折扣!">
+                                        <img src="@/assets/images/subtitle.png" srcset="@/assets/images/subtitle@2x.png 2x, @/assets/images/subtitle@3x.png 3x" alt="台劇華劇扭起來！Vidol 11人VIP歡樂看、11日VIP體驗序號及超多折扣!">
                                     </picture>
                                 </h2>
                             </hgroup>
@@ -192,12 +192,11 @@ export default {
             // gacha
             const gachaAnim = this.$lottie.loadAnimation({
                 container: this.$refs.gacha,
-                renderer: 'canvas',
+                renderer: 'svg',
                 loop: true,
                 autoplay: false,
                 animationData: gachaData
             });
-            this.$refs.gacha.firstChild.style.height = 'auto';
 
             // intro
             this.$nextTick(() => {
@@ -385,11 +384,15 @@ main {
     margin-left: 20px;
 }
 .draw-btn {
-    width: vw(346, 1880);
+    $btn-group-width: 609;
+    $btn-width: 346;
+    margin-right: percentage(($btn-group-width - $btn-width) / 2 / $btn-group-width);
+    margin-left: percentage(($btn-group-width - $btn-width) / 2 / $btn-group-width);
     @media (max-width: #{$tablet-width}px) {
         position: absolute;
         top: calc(50% + #{vw(115, $mobile-width)});
         left: 50%;
+        margin: 0;
         width: 195px;
         transform: translateX(-50%);
     }

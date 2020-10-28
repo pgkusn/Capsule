@@ -62,8 +62,8 @@ app.post(API.draw.url, async (req, res) => {
     console.log(formData);
     res.status(200);
     res.json({
-        reward: 'reward1',
-        status: 'win'
+        reward: '',
+        status: 'lose'
     });
     // res.status(400);
     // res.end();
