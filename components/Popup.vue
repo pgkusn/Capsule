@@ -1,8 +1,8 @@
 <template>
     <div class="popup">
-        <div class="popup__content">
+        <div :id="currentPopup.toLowerCase()" class="popup__content">
             <slot />
-            <div id="popupClose" class="popup__close" @click="closePopup" />
+            <button id="popupClose" class="popup__close" @click="closePopup" />
         </div>
         <div class="popup__overlay" @click="closePopup" />
     </div>
@@ -17,7 +17,7 @@ export default {
         event: 'closePopup'
     },
     computed: {
-        ...mapState(['loading'])
+        ...mapState(['loading', 'currentPopup'])
     },
     methods: {
         ...mapMutations(['setCurrentPopup']),
@@ -48,10 +48,16 @@ export default {
         box-sizing: content-box;
         margin: auto;
         padding: 30px;
-        max-width: 1294px;
-        width: 100%;
+        width: percentage(1294/$desktop-width);
         @media (max-width: #{$tablet-width}px) {
             padding: 10px;
+            width: percentage(353/$mobile-width);
+        }
+        &#warning {
+            width: percentage(1600/$desktop-width);
+            @media (max-width: #{$tablet-width}px) {
+                width: percentage(353/$mobile-width);
+            }
         }
     }
     &__close {
@@ -63,7 +69,6 @@ export default {
         width: percentage(100/1294);
         height: percentage(100/757);
         border-radius: 50%;
-        cursor: pointer;
         @media (max-width: #{$tablet-width}px) {
             top: 10px;
             right: 10px;

@@ -1,6 +1,6 @@
 <template>
     <div class="index">
-        <div v-if="!ignoreOpening" ref="intro" class="intro" />
+        <div ref="intro" class="intro" />
 
         <main>
             <div ref="gacha" class="gacha" :class="{ bounceIn: !ignoreOpening, running: loaded }" />
@@ -8,8 +8,8 @@
             <div ref="bg" class="bg" :class="{ fadeIn: !ignoreOpening, running: loaded }" />
 
             <div class="content container" :class="{ fadeIn: !ignoreOpening, running: loaded }">
-                <ul>
-                    <li>
+                <div class="row">
+                    <div class="col">
                         <div ref="peopleLeft" />
                         <div class="btn-group">
                             <button class="history-btn" @click.prevent="setCurrentPopup('History')">
@@ -19,8 +19,8 @@
                                 <img src="@/assets/images/btn-share.png" alt="分享再扭一次">
                             </button>
                         </div>
-                    </li>
-                    <li>
+                    </div>
+                    <div class="col">
                         <div class="content__title">
                             <hgroup>
                                 <h1>
@@ -39,8 +39,8 @@
                         <button class="draw-btn" @click.prevent="setCurrentPopup('Draw')">
                             <img src="@/assets/images/btn-draw.png" alt="快扭我">
                         </button>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
         </main>
 
@@ -65,13 +65,13 @@ import Share from '@/components/Share.vue';
 // lottie data
 import gachaData from '@/static/lottieData/gacha.json';
 import introData from '@/static/lottieData/intro.json';
-import introDataMb from '@/static/lottieData/intro-s.json';
+import introMbData from '@/static/lottieData/intro-s.json';
 import bgData from '@/static/lottieData/bg.json';
-import bgDataMb from '@/static/lottieData/bg-s.json';
+import bgMbData from '@/static/lottieData/bg-s.json';
 import peopleLeftData from '@/static/lottieData/people-left.json';
-import peopleLeftDataMb from '@/static/lottieData/people-left-s.json';
+import peopleLeftMbData from '@/static/lottieData/people-left-s.json';
 import peopleRightData from '@/static/lottieData/people-right.json';
-import peopleRightDataMb from '@/static/lottieData/people-right-s.json';
+import peopleRightMbData from '@/static/lottieData/people-right-s.json';
 
 export default {
     name: 'Index',
@@ -96,7 +96,23 @@ export default {
             'drawRange',
             'ignoreOpening',
             'loaded'
-        ])
+        ]),
+        lottieFiles () {
+            const gachaFiles = gachaData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const introFiles = introData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const introMbFiles = introMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const bgFiles = bgData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const bgMbFiles = bgMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const peopleLeftFile = peopleLeftData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const peopleLeftMbFile = peopleLeftMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const peopleRightFile = peopleRightData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const peopleRightMbFile = peopleRightMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
+
+            const files = gachaFiles.concat(introFiles, bgFiles, peopleLeftFile, peopleRightFile);
+            const mbFiles = introMbFiles.concat(bgMbFiles, peopleLeftMbFile, peopleRightMbFile);
+
+            return this.tabletWidth ? mbFiles : files;
+        }
     },
     watch: {
         async currentPopup (popupType) {
@@ -129,17 +145,17 @@ export default {
             this.showPopup = true;
         },
         async tabletWidth (value) {
-            this.$lottie.destroy();
-
-            // preload image
+            // preload lottie image
             if (!this.animPlayed && !this.ignoreOpening) {
                 NProgress.start();
-                await this.preloadImg();
+                await this.preloadLottieImg();
                 this.setLoaded();
                 NProgress.done();
             }
 
             this.initLottie();
+
+            this.preloadPopupImg();
         }
     },
     mounted () {
@@ -180,15 +196,12 @@ export default {
                         title: '請先登入 Vidol 會員',
                         confirmButtonText: '立即登入',
                         heightAuto: false
-                    }).then((result) => {
+                    }).then(result => {
                         if (result.isConfirmed) {
                             this.redirectToLogin();
                         }
                         else {
-                            localStorage.removeItem(
-                                'returnPopup',
-                                this.currentPopup
-                            );
+                            localStorage.removeItem('returnPopup', this.currentPopup);
                         }
                     });
                     return;
@@ -215,6 +228,34 @@ export default {
             location.href = redirectUrl[this.$config.ENV];
         },
         initLottie () {
+            this.$lottie.destroy();
+
+            // intro
+            if (!this.ignoreOpening) {
+                const introAnim = this.$lottie.loadAnimation({
+                    container: this.$refs.intro,
+                    renderer: 'svg',
+                    loop: false,
+                    autoplay: true,
+                    animationData: this.tabletWidth ? introMbData : introData
+                });
+                introAnim.addEventListener('DOMLoaded', () => {
+                    this.setSVGAttr(this.$refs.intro.firstChild);
+                });
+            }
+
+            // bg
+            const bgAnim = this.$lottie.loadAnimation({
+                container: this.$refs.bg,
+                renderer: 'svg',
+                loop: true,
+                autoplay: false,
+                animationData: this.tabletWidth ? bgMbData : bgData
+            });
+            bgAnim.addEventListener('DOMLoaded', () => {
+                this.setSVGAttr(this.$refs.bg.firstChild);
+            });
+
             // gacha
             const gachaAnim = this.$lottie.loadAnimation({
                 container: this.$refs.gacha,
@@ -224,50 +265,22 @@ export default {
                 animationData: gachaData
             });
 
-            // intro
-            this.$nextTick(() => {
-                if (this.$refs.intro) {
-                    const introAnim = this.$lottie.loadAnimation({
-                        container: this.$refs.intro,
-                        renderer: 'svg',
-                        loop: false,
-                        autoplay: true,
-                        animationData: this.tabletWidth ? introDataMb : introData
-                    });
-                    introAnim.addEventListener('DOMLoaded', () => {
-                        this.setSVGAttr(this.$refs.intro.firstChild);
-                    });
-                }
-            });
-
-            // bg
-            const bgAnim = this.$lottie.loadAnimation({
-                container: this.$refs.bg,
-                renderer: 'svg',
-                loop: true,
-                autoplay: false,
-                animationData: this.tabletWidth ? bgDataMb : bgData
-            });
-            bgAnim.addEventListener('DOMLoaded', () => {
-                this.setSVGAttr(this.$refs.bg.firstChild);
-            });
-
             // peopleLeft
-            const peopleLeftAnim = this.$lottie.loadAnimation({
+            this.$lottie.loadAnimation({
                 container: this.$refs.peopleLeft,
                 renderer: 'svg',
                 loop: true,
                 autoplay: true,
-                animationData: this.tabletWidth ? peopleLeftDataMb : peopleLeftData
+                animationData: this.tabletWidth ? peopleLeftMbData : peopleLeftData
             });
 
             // peopleRight
-            const peopleRightAnim = this.$lottie.loadAnimation({
+            this.$lottie.loadAnimation({
                 container: this.$refs.peopleRight,
                 renderer: 'svg',
                 loop: true,
                 autoplay: true,
-                animationData: this.tabletWidth ? peopleRightDataMb : peopleRightData
+                animationData: this.tabletWidth ? peopleRightMbData : peopleRightData
             });
 
             const delayTime = this.ignoreOpening || this.animPlayed ? 0 : 4000; // 4s: 2.5s gacha animation delay + 1.5s
@@ -280,28 +293,41 @@ export default {
         setSVGAttr (el) {
             el.setAttribute('preserveAspectRatio', 'xMidYMid slice'); // slice: 滿版
         },
-        preloadImg () {
+        preloadLottieImg () {
+            const vm = this;
             return new Promise((resolve, reject) => {
-                const files = [];
-                for (let i = 0; i <= 129; i++) {
-                    files.push(`images/intro${this.tabletWidth ? '-s' : ''}/seq_0_${i}.jpg`);
-                }
-                for (let i = 0; i <= 149; i++) {
-                    files.push(`images/bg${this.tabletWidth ? '-s' : ''}/seq_0_${i}.jpg`);
-                }
-                for (let i = 0; i <= 14; i++) {
-                    files.push(`images/people-left${this.tabletWidth ? '-s' : ''}/img_${i}.png`);
-                }
-                for (let i = 0; i <= 14; i++) {
-                    files.push(`images/people-right${this.tabletWidth ? '-s' : ''}/img_${i}.png`);
-                }
-                for (let i = 0; i <= 17; i++) {
-                    files.push(`images/gacha/img_${i}.png`);
-                }
-                const queue = new createjs.LoadQueue();
-                queue.loadManifest(files);
+                const queue = new createjs.LoadQueue(false);
                 queue.on('complete', () => resolve());
+                queue.loadManifest(vm.lottieFiles);
             });
+        },
+        preloadPopupImg () {
+            const files = [
+                'images/popup-bg/is-drawn.jpg',
+                'images/popup-bg/is-shared.jpg',
+                'images/popup-bg/lose.jpg',
+                'images/popup-bg/no-shared.jpg',
+                'images/popup-bg/normal.jpg',
+                'images/popup-bg/reward1.jpg',
+                'images/popup-bg/reward2.jpg',
+                'images/popup-bg/reward3.jpg',
+                'images/popup-bg/reward4.jpg',
+                'images/popup-bg/reward5.jpg'
+            ];
+            const mbFiles = [
+                'images/popup-bg/is-drawn-s.jpg',
+                'images/popup-bg/is-shared-s.jpg',
+                'images/popup-bg/lose-s.jpg',
+                'images/popup-bg/no-shared-s.jpg',
+                'images/popup-bg/normal-s.jpg',
+                'images/popup-bg/reward1-s.jpg',
+                'images/popup-bg/reward2-s.jpg',
+                'images/popup-bg/reward3-s.jpg',
+                'images/popup-bg/reward4-s.jpg',
+                'images/popup-bg/reward5-s.jpg'
+            ];
+            const queue = new createjs.LoadQueue(false);
+            queue.loadManifest(this.tabletWidth ? mbFiles : files);
         }
     }
 };
@@ -358,7 +384,7 @@ main {
     max-width: #{$desktop-width}px;
     width: calc(100% - 40px);
     height: 100%;
-    ul {
+    > .row {
         position: absolute;
         top: 50%;
         left: 0;
@@ -377,7 +403,7 @@ main {
             transform: none;
         }
     }
-    li {
+    .col {
         display: flex;
         flex-direction: column;
         height: 100%;
@@ -385,7 +411,7 @@ main {
         @media (max-width: #{$tablet-width}px) {
             justify-content: center;
         }
-        + li {
+        + .col {
             margin-left: vw(385, $desktop-width);
             @media (max-width: #{$tablet-width}px) {
                 margin-left: vw(134, $mobile-width);

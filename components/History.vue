@@ -4,9 +4,11 @@
             <hgroup class="history__title">
                 <h1><img src="@/assets/images/title.png" alt="1111 驚喜扭扭樂"></h1>
                 <h2><img src="@/assets/images/history-subtitle.png" alt="我的中獎紀錄"></h2>
-                <h3>會員ＩＤ（帶入登錄ＩＤ）</h3>
+                <h3 v-if="history.length">
+                    會員ＩＤ（帶入登錄ＩＤ）
+                </h3>
             </hgroup>
-            <table class="history__list">
+            <table v-if="history.length" class="history__list">
                 <thead>
                     <tr>
                         <th>中獎獎項</th>
@@ -34,6 +36,9 @@
                     </tr>
                 </tbody>
             </table>
+            <p v-else class="history__no-list">
+                QQ 沒有中獎紀錄<br>再去扭一次！
+            </p>
         </div>
         <div v-else>
             <Loading class="draw__loading" />
@@ -208,6 +213,12 @@ $base-color: #472fff;
                 }
             }
         }
+    }
+    &__no-list {
+        text-align: center;
+        letter-spacing: letter-spacing(50);
+        font-size: 25px;
+        line-height: 1.5;
     }
     &__cube {
         > li {

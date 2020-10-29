@@ -42,7 +42,7 @@ export default {
                 defer: 'defer'
             },
             {
-                src: 'https://code.createjs.com/1.0.0/preloadjs.min.js',
+                src: 'js/preloadjs.min.js',
                 defer: 'defer'
             }
         ]

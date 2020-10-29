@@ -53,11 +53,11 @@ export default {
             else if (this.drawResult.status === 'win') {
                 this.setCurrentPopup('History');
             }
-            else if (this.drawResult.status === 'lose') {
-                window.open('https://導觀看連結');
-            }
             else if (this.drawResult.status === 'normal') {
                 window.open('https://導方案頁');
+            }
+            else if (this.drawResult.status === 'lose') {
+                window.open('https://導觀看連結');
             }
         }
     }

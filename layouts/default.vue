@@ -99,7 +99,7 @@ body {
         }
     }
 }
-a.logo {
+.logo {
     position: absolute;
     top: vw(11, $desktop-width);
     left: vw(22, $desktop-width);
@@ -132,6 +132,18 @@ a.logo {
 .swal2-title {
     @media (max-width: #{$tablet-width}px) {
         font-size: 1.7em !important;
+    }
+}
+#nprogress {
+    .bar {
+        background-color: #fff !important;
+    }
+    .spinner-icon {
+        border-top-color: #fff !important;
+        border-left-color: #fff !important;
+    }
+    .peg {
+        box-shadow: 0 0 10px #fff, 0 0 5px #fff !important;
     }
 }
 </style>

@@ -30,6 +30,8 @@ app.post(API.history.url, async (req, res) => {
             url: 'https://'
         }
     ]);
+    // res.json([]);
+
     // res.status(400);
     // res.end();
 });
