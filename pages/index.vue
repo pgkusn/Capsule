@@ -3,14 +3,14 @@
         <div ref="intro" class="intro" />
 
         <main>
-            <div ref="gacha" class="gacha" :class="{ bounceIn: !ignoreOpening, running: loaded }" />
+            <div ref="gacha" class="gacha" :class="{ bounceIn: !ignoreOpening, fadeIn: ignoreOpening }" />
 
-            <div ref="bg" class="bg" :class="{ fadeIn: !ignoreOpening, running: loaded }" />
+            <div ref="bg" class="bg fadeIn" />
 
-            <div class="content container" :class="{ fadeIn: !ignoreOpening, running: loaded }">
+            <div class="content container fadeIn">
                 <div class="row">
                     <div class="col">
-                        <div ref="peopleLeft" />
+                        <div ref="peopleLeft" class="people" />
                         <div class="btn-group">
                             <button class="history-btn" @click.prevent="setCurrentPopup('History')">
                                 <img src="@/assets/images/btn-history.png" alt="中獎紀錄">
@@ -35,7 +35,7 @@
                             </hgroup>
                             <button class="warning-btn" @click.prevent="setCurrentPopup('Warning')" />
                         </div>
-                        <div ref="peopleRight" />
+                        <div ref="peopleRight" class="people" />
                         <button class="draw-btn" @click.prevent="setCurrentPopup('Draw')">
                             <img src="@/assets/images/btn-draw.png" alt="快扭我">
                         </button>
@@ -98,6 +98,9 @@ export default {
             'loaded'
         ]),
         lottieFiles () {
+            let files = [];
+            let mbFiles = [];
+
             const gachaFiles = gachaData.assets.map(asset => asset.u + asset.p).filter(value => value);
             const introFiles = introData.assets.map(asset => asset.u + asset.p).filter(value => value);
             const introMbFiles = introMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
@@ -108,8 +111,13 @@ export default {
             const peopleRightFile = peopleRightData.assets.map(asset => asset.u + asset.p).filter(value => value);
             const peopleRightMbFile = peopleRightMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
 
-            const files = gachaFiles.concat(introFiles, bgFiles, peopleLeftFile, peopleRightFile);
-            const mbFiles = introMbFiles.concat(bgMbFiles, peopleLeftMbFile, peopleRightMbFile);
+            files = files.concat(gachaFiles, bgFiles, peopleLeftFile, peopleRightFile);
+            mbFiles = mbFiles.concat(introMbFiles, bgMbFiles, peopleLeftMbFile, peopleRightMbFile);
+
+            if (!this.ignoreOpening) {
+                files = files.concat(introFiles);
+                mbFiles = mbFiles.concat(introMbFiles);
+            }
 
             return this.tabletWidth ? mbFiles : files;
         }
@@ -145,28 +153,31 @@ export default {
             this.showPopup = true;
         },
         async tabletWidth (value) {
+            // this.setIgnoreOpening(); // debug
+
+            NProgress.start();
+
             // preload lottie image
-            if (!this.animPlayed && !this.ignoreOpening) {
-                NProgress.start();
+            if (!this.animPlayed) {
                 await this.preloadLottieImg();
                 this.setLoaded();
-                NProgress.done();
             }
 
-            this.initLottie();
+            // open popup after login
+            const currentPopup = localStorage.getItem('returnPopup');
+            if (currentPopup) {
+                this.setIgnoreOpening();
+                this.initLottie();
+                await this.preloadPopupImg();
+                this.setCurrentPopup(currentPopup);
+                localStorage.removeItem('returnPopup');
+            }
+            else {
+                this.initLottie();
+                this.preloadPopupImg();
+            }
 
-            this.preloadPopupImg();
-        }
-    },
-    mounted () {
-        // this.setIgnoreOpening(); // debug
-
-        // open popup after login
-        const currentPopup = localStorage.getItem('returnPopup');
-        if (currentPopup) {
-            this.setIgnoreOpening();
-            this.setCurrentPopup(currentPopup);
-            localStorage.removeItem('returnPopup');
+            NProgress.done();
         }
     },
     methods: {
@@ -294,40 +305,42 @@ export default {
             el.setAttribute('preserveAspectRatio', 'xMidYMid slice'); // slice: 滿版
         },
         preloadLottieImg () {
-            const vm = this;
             return new Promise((resolve, reject) => {
                 const queue = new createjs.LoadQueue(false);
                 queue.on('complete', () => resolve());
-                queue.loadManifest(vm.lottieFiles);
+                queue.loadManifest(this.lottieFiles);
             });
         },
         preloadPopupImg () {
-            const files = [
-                'images/popup-bg/is-drawn.jpg',
-                'images/popup-bg/is-shared.jpg',
-                'images/popup-bg/lose.jpg',
-                'images/popup-bg/no-shared.jpg',
-                'images/popup-bg/normal.jpg',
-                'images/popup-bg/reward1.jpg',
-                'images/popup-bg/reward2.jpg',
-                'images/popup-bg/reward3.jpg',
-                'images/popup-bg/reward4.jpg',
-                'images/popup-bg/reward5.jpg'
-            ];
-            const mbFiles = [
-                'images/popup-bg/is-drawn-s.jpg',
-                'images/popup-bg/is-shared-s.jpg',
-                'images/popup-bg/lose-s.jpg',
-                'images/popup-bg/no-shared-s.jpg',
-                'images/popup-bg/normal-s.jpg',
-                'images/popup-bg/reward1-s.jpg',
-                'images/popup-bg/reward2-s.jpg',
-                'images/popup-bg/reward3-s.jpg',
-                'images/popup-bg/reward4-s.jpg',
-                'images/popup-bg/reward5-s.jpg'
-            ];
-            const queue = new createjs.LoadQueue(false);
-            queue.loadManifest(this.tabletWidth ? mbFiles : files);
+            return new Promise((resolve, reject) => {
+                const files = [
+                    'images/popup-bg/is-drawn.jpg',
+                    'images/popup-bg/is-shared.jpg',
+                    'images/popup-bg/lose.jpg',
+                    'images/popup-bg/no-shared.jpg',
+                    'images/popup-bg/normal.jpg',
+                    'images/popup-bg/reward1.jpg',
+                    'images/popup-bg/reward2.jpg',
+                    'images/popup-bg/reward3.jpg',
+                    'images/popup-bg/reward4.jpg',
+                    'images/popup-bg/reward5.jpg'
+                ];
+                const mbFiles = [
+                    'images/popup-bg/is-drawn-s.jpg',
+                    'images/popup-bg/is-shared-s.jpg',
+                    'images/popup-bg/lose-s.jpg',
+                    'images/popup-bg/no-shared-s.jpg',
+                    'images/popup-bg/normal-s.jpg',
+                    'images/popup-bg/reward1-s.jpg',
+                    'images/popup-bg/reward2-s.jpg',
+                    'images/popup-bg/reward3-s.jpg',
+                    'images/popup-bg/reward4-s.jpg',
+                    'images/popup-bg/reward5-s.jpg'
+                ];
+                const queue = new createjs.LoadQueue(false);
+                queue.on('complete', () => resolve());
+                queue.loadManifest(this.tabletWidth ? mbFiles : files);
+            });
         }
     }
 };
@@ -366,17 +379,6 @@ main {
     align-items: center;
     @media (max-width: #{$tablet-width}px) {
         width: vw(140, $mobile-width);
-    }
-    &.bounceIn {
-        animation: popup .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both paused;
-    }
-}
-@keyframes popup {
-    from {
-        transform: scale(0);
-    }
-    to {
-        transform: scale(1);
     }
 }
 .content {
@@ -443,6 +445,11 @@ main {
                 width: 310px;
             }
         }
+    }
+}
+.people {
+    @media (max-width: #{$tablet-width}px) {
+        margin-top: vw(155, $mobile-width);
     }
 }
 .btn-group {

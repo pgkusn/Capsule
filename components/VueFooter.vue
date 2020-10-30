@@ -1,5 +1,5 @@
 <template>
-    <div class="footer" :class="{ fadeIn: !ignoreOpening, running: loaded }">
+    <div class="footer fadeIn">
         <div class="container">
             <div class="footer__text">
                 <p>© 2020 Vidol All Rights Reserved</p>

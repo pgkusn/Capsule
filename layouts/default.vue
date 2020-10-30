@@ -1,12 +1,7 @@
 <template>
-    <div class="app" :class="{ 'is-mobile': isMobile }">
+    <div class="app" :class="{ 'is-mobile': isMobile, 'opening': !ignoreOpening, loaded }">
         <div class="app__content">
-            <a
-                href="https://vidol.tv/"
-                target="_blank"
-                class="logo"
-                :class="{ fadeIn: !ignoreOpening, running: loaded }"
-            />
+            <a href="https://vidol.tv/" target="_blank" class="logo fadeIn" />
             <nuxt />
         </div>
         <VueFooter ref="footer" />
@@ -116,7 +111,15 @@ body {
     }
 }
 .fadeIn {
-    animation: fadeIn .5s 4s both paused;
+    animation: fadeIn .5s both paused;
+    @at-root {
+        .app.opening .fadeIn {
+            animation-delay: 4s;
+        }
+        .app.loaded .fadeIn {
+            animation-play-state: running;
+        }
+    }
 }
 @keyframes fadeIn {
     from {
@@ -126,8 +129,21 @@ body {
         opacity: 1;
     }
 }
-.running {
-    animation-play-state: running !important;
+.bounceIn {
+    animation: popup .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both paused;
+    @at-root {
+        .app.loaded .bounceIn {
+            animation-play-state: running;
+        }
+    }
+}
+@keyframes popup {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
 }
 .swal2-title {
     @media (max-width: #{$tablet-width}px) {
