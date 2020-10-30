@@ -49,18 +49,21 @@
                 <component :is="currentPopup" />
             </Popup>
         </transition>
+
+        <transition name="fade">
+            <Loader v-if="!loaded" :progress="loadProgress" />
+        </transition>
     </div>
 </template>
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex';
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
 import Warning from '@/components/Warning.vue';
 import Popup from '@/components/Popup.vue';
 import History from '@/components/History.vue';
 import Draw from '@/components/Draw.vue';
 import Share from '@/components/Share.vue';
+import Loader from '@/components/Loader.vue';
 
 // lottie data
 import gachaData from '@/static/lottieData/gacha.json';
@@ -80,12 +83,14 @@ export default {
         Popup,
         History,
         Draw,
-        Share
+        Share,
+        Loader
     },
     data () {
         return {
             showPopup: false,
-            animPlayed: false
+            animPlayed: false,
+            loadProgress: 0
         };
     },
     computed: {
@@ -110,7 +115,7 @@ export default {
             const peopleRightMbFile = peopleRightMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
 
             files = files.concat(gachaFiles, peopleLeftFile, peopleRightFile);
-            mbFiles = mbFiles.concat(peopleLeftMbFile, peopleRightMbFile);
+            mbFiles = mbFiles.concat(gachaFiles, peopleLeftMbFile, peopleRightMbFile);
 
             if (!this.ignoreOpening) {
                 files = files.concat(introFiles);
@@ -118,6 +123,11 @@ export default {
             }
 
             return this.tabletWidth ? mbFiles : files;
+        },
+        bgLottieFiles () {
+            const bgFiles = bgData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const bgMbFiles = bgMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            return this.tabletWidth ? bgMbFiles : bgFiles;
         }
     },
     watch: {
@@ -151,15 +161,13 @@ export default {
             this.showPopup = true;
         },
         async tabletWidth (value) {
-            // this.setIgnoreOpening(); // debug
-
-            NProgress.start();
-
             // preload lottie image
-            if (!this.animPlayed && !this.ignoreOpening) {
-                await this.preloadLottieImg();
+            if (!this.animPlayed) {
+                await this.preloadLottieImg(this.lottieFiles);
                 this.setLoaded();
             }
+
+            // this.setIgnoreOpening(); // debug
 
             // open popup after login
             const currentPopup = localStorage.getItem('returnPopup');
@@ -174,8 +182,6 @@ export default {
                 this.initLottie();
                 this.preloadPopupImg();
             }
-
-            NProgress.done();
         }
     },
     methods: {
@@ -236,7 +242,7 @@ export default {
             };
             location.href = redirectUrl[this.$config.ENV];
         },
-        initLottie () {
+        async initLottie () {
             this.$lottie.destroy();
 
             // intro
@@ -292,21 +298,29 @@ export default {
                 animationData: this.tabletWidth ? peopleRightMbData : peopleRightData
             });
 
+            // gacha play
             const delayTime = this.ignoreOpening || this.animPlayed ? 0 : 4000; // 4s: 2.5s gacha animation delay + 1.5s
             setTimeout(() => {
                 gachaAnim.play();
-                bgAnim.play();
-                this.animPlayed = true;
             }, delayTime);
+
+            // bg play
+            await this.preloadLottieImg(this.bgLottieFiles);
+            bgAnim.play();
+
+            this.animPlayed = true;
         },
         setSVGAttr (el) {
             el.setAttribute('preserveAspectRatio', 'xMidYMid slice'); // slice: 滿版
         },
-        preloadLottieImg () {
+        preloadLottieImg (files) {
             return new Promise((resolve, reject) => {
                 const queue = new createjs.LoadQueue(false);
                 queue.on('complete', () => resolve());
-                queue.loadManifest(this.lottieFiles);
+                queue.on('progress', value => {
+                    this.loadProgress = Math.floor(value.progress * 100);
+                });
+                queue.loadManifest(files);
             });
         },
         preloadPopupImg () {

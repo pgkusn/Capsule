@@ -59,7 +59,6 @@ body,
 body {
     overflow: hidden;
     min-width: 375px;
-    background-color: rgb(50, 70, 245);
 }
 .page-enter-active,
 .page-leave-active {
@@ -87,6 +86,11 @@ body {
 .app {
     position: relative;
     margin: 0 auto;
+    background-color: rgb(50, 70, 245);
+    transition: background-color .2s; // Loader fadeout 0.2s
+    &.loaded {
+        background-color: #fff9eb;
+    }
     &__content {
         padding-bottom: 80px;
         @media (max-width: #{$tablet-width}px) {

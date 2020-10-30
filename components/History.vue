@@ -20,7 +20,7 @@
                 <tbody>
                     <tr v-for="item in history" :key="item.number">
                         <td>
-                            <div>{{ item.reward }}</div>
+                            <div>{{ getRewardName(item.reward) }}</div>
                         </td>
                         <td>
                             <div>{{ item.number }}</div>
@@ -62,6 +62,18 @@ export default {
     },
     computed: {
         ...mapState(['history'])
+    },
+    methods: {
+        getRewardName (value) {
+            const rewardName = {
+                reward1: 'Vidol 11人VIP歡樂看',
+                reward2: '11日VIP體驗序號',
+                reward3: 'Vidol 111元折扣',
+                reward4: 'Vidol 11%折扣',
+                reward5: 'Vidol 11元折扣'
+            };
+            return rewardName[value];
+        }
     }
 };
 </script>
@@ -116,6 +128,7 @@ $base-color: #472fff;
         width: 100%;
         table-layout: fixed;
         text-align: center;
+        letter-spacing: letter-spacing(50);
         th {
             padding-bottom: 10px;
             letter-spacing: letter-spacing(50);
@@ -128,45 +141,47 @@ $base-color: #472fff;
             tr + tr {
                 margin-top: 4px;
             }
-            td {
-                position: relative;
-                padding: 10px 5px;
-                vertical-align: middle;
-                font-size: 18px;
-                @media (max-width: #{$tablet-width}px) {
-                    font-size: 12px;
-                }
-                &::before {
-                    position: absolute;
-                    top: 50%;
-                    left: 0;
-                    width: 100%;
-                    height: calc(100% - 5px);
-                    background-color: #e6e6e6;
-                    content: '';
-                    transform: translateY(-50%);
-                    @at-root {
-                        .history__list tbody tr:nth-child(even) td::before {
-                            background-color: #c1c1c1;
+        }
+        td {
+            position: relative;
+            padding: 10px 5px;
+            vertical-align: middle;
+            font-size: 18px;
+            line-height: 23px;
+            @media (max-width: #{$tablet-width}px) {
+                font-size: 12px;
+                line-height: 15px;
+            }
+            &::before {
+                position: absolute;
+                top: 50%;
+                left: 0;
+                width: 100%;
+                height: calc(100% - 5px);
+                background-color: #e6e6e6;
+                content: '';
+                transform: translateY(-50%);
+                @at-root {
+                    .history__list tbody tr:nth-child(even) td::before {
+                        background-color: #c1c1c1;
+                    }
+                    .history__list tbody td:first-child::before {
+                        border-radius: 10px 0  0 10px;
+                        @media (max-width: #{$tablet-width}px) {
+                            border-radius: 0;
                         }
-                        .history__list tbody td:first-child::before {
-                            border-radius: 10px 0  0 10px;
-                            @media (max-width: #{$tablet-width}px) {
-                                border-radius: 0;
-                            }
-                        }
-                        .history__list tbody td:last-child::before {
-                            border-radius: 0 10px 10px 0;
-                            @media (max-width: #{$tablet-width}px) {
-                                border-radius: 0;
-                            }
+                    }
+                    .history__list tbody td:last-child::before {
+                        border-radius: 0 10px 10px 0;
+                        @media (max-width: #{$tablet-width}px) {
+                            border-radius: 0;
                         }
                     }
                 }
-                > div {
-                    position: relative;
-                    z-index: 1;
-                }
+            }
+            > div {
+                position: relative;
+                z-index: 1;
             }
         }
         &--status {

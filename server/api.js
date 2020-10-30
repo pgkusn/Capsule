@@ -18,16 +18,88 @@ app.post(API.history.url, async (req, res) => {
     res.status(200);
     res.json([
         {
-            reward: '獎項1',
-            number: '獎項序號',
-            exchange: true,
-            url: 'https://'
+            reward: 'reward1',
+            number: 'FUL5XCO3',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
         },
         {
-            reward: '獎項2',
-            number: '獎項序號2',
-            exchange: false,
-            url: 'https://'
+            reward: 'reward1',
+            number: 'KLIRSSDJ',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward1',
+            number: 'ZWHZTSLM',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward1',
+            number: '6LEJMDUI',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward1',
+            number: '4VMIQEER',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward1',
+            number: 'R0EJUNTK',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward1',
+            number: 'ZKPOM75B',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward1',
+            number: 'H26L74TS',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward1',
+            number: 'QIL5V9BK',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward1',
+            number: 'KOZVQXIZ',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward1',
+            number: '0K7YTLAX',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward4',
+            number: 'YZAV2DNS',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward5',
+            number: 'QPA5WXLD',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
+        },
+        {
+            reward: 'reward5',
+            number: 'TYN4SHZA',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: false
         }
     ]);
     // res.json([]);
