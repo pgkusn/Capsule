@@ -97,10 +97,27 @@ export default {
             'ignoreOpening',
             'loaded'
         ]),
-        introLottieFiles () {
+        lottieFiles () {
+            let files = [];
+            let mbFiles = [];
+
+            const gachaFiles = gachaData.assets.map(asset => asset.u + asset.p).filter(value => value);
             const introFiles = introData.assets.map(asset => asset.u + asset.p).filter(value => value);
             const introMbFiles = introMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
-            return this.tabletWidth ? introMbFiles : introFiles;
+            const peopleLeftFile = peopleLeftData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const peopleLeftMbFile = peopleLeftMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const peopleRightFile = peopleRightData.assets.map(asset => asset.u + asset.p).filter(value => value);
+            const peopleRightMbFile = peopleRightMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
+
+            files = files.concat(gachaFiles, peopleLeftFile, peopleRightFile);
+            mbFiles = mbFiles.concat(peopleLeftMbFile, peopleRightMbFile);
+
+            if (!this.ignoreOpening) {
+                files = files.concat(introFiles);
+                mbFiles = mbFiles.concat(introMbFiles);
+            }
+
+            return this.tabletWidth ? mbFiles : files;
         }
     },
     watch: {
@@ -289,7 +306,7 @@ export default {
             return new Promise((resolve, reject) => {
                 const queue = new createjs.LoadQueue(false);
                 queue.on('complete', () => resolve());
-                queue.loadManifest(this.introLottieFiles);
+                queue.loadManifest(this.lottieFiles);
             });
         },
         preloadPopupImg () {
