@@ -97,29 +97,10 @@ export default {
             'ignoreOpening',
             'loaded'
         ]),
-        lottieFiles () {
-            let files = [];
-            let mbFiles = [];
-
-            const gachaFiles = gachaData.assets.map(asset => asset.u + asset.p).filter(value => value);
+        introLottieFiles () {
             const introFiles = introData.assets.map(asset => asset.u + asset.p).filter(value => value);
             const introMbFiles = introMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
-            const bgFiles = bgData.assets.map(asset => asset.u + asset.p).filter(value => value);
-            const bgMbFiles = bgMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
-            const peopleLeftFile = peopleLeftData.assets.map(asset => asset.u + asset.p).filter(value => value);
-            const peopleLeftMbFile = peopleLeftMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
-            const peopleRightFile = peopleRightData.assets.map(asset => asset.u + asset.p).filter(value => value);
-            const peopleRightMbFile = peopleRightMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
-
-            files = files.concat(gachaFiles, bgFiles, peopleLeftFile, peopleRightFile);
-            mbFiles = mbFiles.concat(introMbFiles, bgMbFiles, peopleLeftMbFile, peopleRightMbFile);
-
-            if (!this.ignoreOpening) {
-                files = files.concat(introFiles);
-                mbFiles = mbFiles.concat(introMbFiles);
-            }
-
-            return this.tabletWidth ? mbFiles : files;
+            return this.tabletWidth ? introMbFiles : introFiles;
         }
     },
     watch: {
@@ -158,7 +139,7 @@ export default {
             NProgress.start();
 
             // preload lottie image
-            if (!this.animPlayed) {
+            if (!this.animPlayed && !this.ignoreOpening) {
                 await this.preloadLottieImg();
                 this.setLoaded();
             }
@@ -308,7 +289,7 @@ export default {
             return new Promise((resolve, reject) => {
                 const queue = new createjs.LoadQueue(false);
                 queue.on('complete', () => resolve());
-                queue.loadManifest(this.lottieFiles);
+                queue.loadManifest(this.introLottieFiles);
             });
         },
         preloadPopupImg () {
