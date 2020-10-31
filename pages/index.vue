@@ -3,11 +3,16 @@
         <div ref="intro" class="intro" />
 
         <main>
-            <div ref="gacha" class="gacha" :class="{ bounceIn: !noIntro, fadeIn: noIntro }" />
+            <div
+                v-if="loaded"
+                ref="gacha"
+                class="gacha"
+                :class="{ bounceIn: !introComplete }"
+            />
 
-            <div ref="bg" class="bg fadeIn" />
+            <div ref="bg" class="bg" :class="{ fadeIn: introComplete }" />
 
-            <div class="content container fadeIn">
+            <div class="content container" :class="{ fadeIn: introComplete }">
                 <div class="row">
                     <div class="col">
                         <div ref="peopleLeft" class="people" />
@@ -76,6 +81,8 @@ import peopleLeftMbData from '@/static/lottieData/people-left-s.json';
 import peopleRightData from '@/static/lottieData/people-right.json';
 import peopleRightMbData from '@/static/lottieData/people-right-s.json';
 
+let gachaAnim, bgAnim;
+
 export default {
     name: 'Index',
     components: {
@@ -90,7 +97,8 @@ export default {
         return {
             showPopup: false,
             animPlayed: false,
-            loadProgress: 0
+            loadProgress: 0,
+            loaded: false
         };
     },
     computed: {
@@ -99,8 +107,7 @@ export default {
             'currentPopup',
             'history',
             'drawRange',
-            'noIntro',
-            'loaded'
+            'introComplete'
         ]),
         lottieFiles () {
             let files = [];
@@ -114,13 +121,8 @@ export default {
             const peopleRightFile = peopleRightData.assets.map(asset => asset.u + asset.p).filter(value => value);
             const peopleRightMbFile = peopleRightMbData.assets.map(asset => asset.u + asset.p).filter(value => value);
 
-            files = files.concat(gachaFiles, peopleLeftFile, peopleRightFile);
-            mbFiles = mbFiles.concat(gachaFiles, peopleLeftMbFile, peopleRightMbFile);
-
-            if (!this.noIntro) {
-                files = files.concat(introFiles);
-                mbFiles = mbFiles.concat(introMbFiles);
-            }
+            files = files.concat(introFiles, gachaFiles, peopleLeftFile, peopleRightFile);
+            mbFiles = mbFiles.concat(introMbFiles, gachaFiles, peopleLeftMbFile, peopleRightMbFile);
 
             return this.tabletWidth ? mbFiles : files;
         },
@@ -164,25 +166,34 @@ export default {
             // preload lottie image
             if (!this.animPlayed) {
                 await this.preloadLottieImg(this.lottieFiles);
-                this.setLoaded();
+                this.loaded = true;
             }
 
-            // this.setNoIntro(); // debug
+            // this.setIntroComplete(); // debug
 
-            // open popup after login
-            const currentPopup = localStorage.getItem('returnPopup');
-            if (currentPopup) {
-                this.setNoIntro();
+            this.$nextTick(async () => {
+                // open popup after login
+                const currentPopup = localStorage.getItem('returnPopup');
+                if (currentPopup) {
+                    this.setIntroComplete();
 
-                this.initLottie();
-                await this.preloadPopupImg();
+                    this.initLottie();
+                    await this.preloadPopupImg();
 
-                this.setCurrentPopup(currentPopup);
-                localStorage.removeItem('returnPopup');
-            }
-            else {
-                this.initLottie();
-                this.preloadPopupImg();
+                    this.setCurrentPopup(currentPopup);
+                    localStorage.removeItem('returnPopup');
+                }
+                else {
+                    this.initLottie();
+                    this.preloadPopupImg();
+                }
+            });
+        },
+        introComplete () {
+            gachaAnim.play();
+
+            if (bgAnim) {
+                this.bgAnimPlay();
             }
         }
     },
@@ -190,8 +201,7 @@ export default {
         ...mapMutations([
             'setCurrentPopup',
             'setUserToken',
-            'setNoIntro',
-            'setLoaded'
+            'setIntroComplete'
         ]),
         ...mapActions([
             'getHistory',
@@ -244,11 +254,25 @@ export default {
             };
             location.href = redirectUrl[this.$config.ENV];
         },
-        async initLottie () {
+        initLottie () {
             this.$lottie.destroy();
 
-            // init intro
-            if (!this.noIntro) {
+            // gacha
+            gachaAnim = this.$lottie.loadAnimation({
+                container: this.$refs.gacha,
+                renderer: 'svg',
+                loop: true,
+                autoplay: false,
+                animationData: gachaData
+            });
+            if (this.tabletWidth) {
+                gachaAnim.addEventListener('DOMLoaded', () => {
+                    this.$refs.gacha.firstChild.style.transform = 'translate3d(0px, 20px, 0px)';
+                });
+            }
+
+            // intro
+            if (!this.introComplete) {
                 const introAnim = this.$lottie.loadAnimation({
                     container: this.$refs.intro,
                     renderer: 'svg',
@@ -258,11 +282,33 @@ export default {
                 });
                 introAnim.addEventListener('DOMLoaded', () => {
                     this.setSVGAttr(this.$refs.intro.firstChild);
+                    document.querySelector('.app').style['background-color'] = '#fff9eb';
+                });
+                introAnim.addEventListener('complete', () => {
+                    this.setIntroComplete();
                 });
             }
 
-            // init bg
-            const bgAnim = this.$lottie.loadAnimation({
+            // peopleLeft
+            this.$lottie.loadAnimation({
+                container: this.$refs.peopleLeft,
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                animationData: this.tabletWidth ? peopleLeftMbData : peopleLeftData
+            });
+
+            // peopleRight
+            this.$lottie.loadAnimation({
+                container: this.$refs.peopleRight,
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                animationData: this.tabletWidth ? peopleRightMbData : peopleRightData
+            });
+
+            // bg
+            bgAnim = this.$lottie.loadAnimation({
                 container: this.$refs.bg,
                 renderer: 'svg',
                 loop: true,
@@ -272,48 +318,18 @@ export default {
             bgAnim.addEventListener('DOMLoaded', () => {
                 this.setSVGAttr(this.$refs.bg.firstChild);
             });
-
-            // init gacha
-            const gachaAnim = this.$lottie.loadAnimation({
-                container: this.$refs.gacha,
-                renderer: 'svg',
-                loop: true,
-                autoplay: false,
-                animationData: gachaData
-            });
-
-            // init peopleLeft
-            this.$lottie.loadAnimation({
-                container: this.$refs.peopleLeft,
-                renderer: 'svg',
-                loop: true,
-                autoplay: true,
-                animationData: this.tabletWidth ? peopleLeftMbData : peopleLeftData
-            });
-
-            // init peopleRight
-            this.$lottie.loadAnimation({
-                container: this.$refs.peopleRight,
-                renderer: 'svg',
-                loop: true,
-                autoplay: true,
-                animationData: this.tabletWidth ? peopleRightMbData : peopleRightData
-            });
-
-            // play gacha
-            const delayTime = this.noIntro || this.animPlayed ? 0 : 4000; // same as fadeIn delay time
-            setTimeout(() => {
-                gachaAnim.play();
-            }, delayTime);
-
-            // preload and play bg
-            await this.preloadLottieImg(this.bgLottieFiles);
-            bgAnim.play();
+            if (this.animPlayed) {
+                this.bgAnimPlay();
+            }
 
             this.animPlayed = true;
         },
         setSVGAttr (el) {
             el.setAttribute('preserveAspectRatio', 'xMidYMid slice'); // slice: 滿版
+        },
+        async bgAnimPlay () {
+            await this.preloadLottieImg(this.bgLottieFiles);
+            bgAnim.play();
         },
         preloadLottieImg (files) {
             return new Promise((resolve, reject) => {
@@ -380,6 +396,9 @@ main {
     bottom: 0;
     left: 0;
 }
+.bg {
+    opacity: 0;
+}
 .gacha {
     position: absolute;
     top: 0;
@@ -396,13 +415,25 @@ main {
     @media (max-width: #{$tablet-width}px) {
         width: vw(140, $mobile-width);
     }
+    &.bounceIn {
+        animation: bounceIn .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both;
+    }
+}
+@keyframes bounceIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
 }
 .content {
     position: relative;
     max-width: #{$desktop-width}px;
     width: calc(100% - 40px);
     height: 100%;
-    > .row {
+    opacity: 0;
+    .row {
         position: absolute;
         top: 50%;
         left: 0;
@@ -441,7 +472,7 @@ main {
         align-self: flex-start;
         @media (max-width: #{$tablet-width}px) {
             position: absolute;
-            top: calc(50% - #{vw(105, $mobile-width)} - 123px);
+            top: calc(50% - #{vw(105, $mobile-width)} - 113px);
             left: 50%;
             margin: 0;
             transform: translateX(-50%);
@@ -454,10 +485,8 @@ main {
         }
         h2 {
             margin-top: 30px;
-            padding-left: 16px;
             @media (max-width: #{$tablet-width}px) {
                 margin: 10px auto 0;
-                padding-left: 0;
                 width: 310px;
             }
         }
@@ -465,14 +494,14 @@ main {
 }
 .people {
     @media (max-width: #{$tablet-width}px) {
-        margin-top: vw(155, $mobile-width);
+        margin-top: vw(195, $mobile-width);
     }
 }
 .btn-group {
     display: flex;
     @media (max-width: #{$tablet-width}px) {
         position: absolute;
-        top: calc(50% + #{vw(115, $mobile-width)} + 60px);
+        top: calc(50% + #{vw(135, $mobile-width)} + 60px);
         left: 50%;
         width: 335px;
         transform: translateX(-50%);
@@ -488,7 +517,7 @@ main {
     margin-left: percentage(($btn-group-width - $btn-width) / 2 / $btn-group-width);
     @media (max-width: #{$tablet-width}px) {
         position: absolute;
-        top: calc(50% + #{vw(115, $mobile-width)});
+        top: calc(50% + #{vw(135, $mobile-width)});
         left: 50%;
         margin: 0;
         width: 195px;
@@ -497,7 +526,7 @@ main {
 }
 .warning-btn {
     display: flex;
-    margin: 20px 0 0 20px;
+    margin: 20px 0 0 10px;
     align-items: center;
     @media (max-width: #{$tablet-width}px) {
         position: absolute;

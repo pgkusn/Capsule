@@ -34,72 +34,6 @@ app.post(API.history.url, async (req, res) => {
             number: 'ZWHZTSLM',
             url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
             exchange: false
-        },
-        {
-            reward: 'reward1',
-            number: '6LEJMDUI',
-            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
-            exchange: false
-        },
-        {
-            reward: 'reward1',
-            number: '4VMIQEER',
-            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
-            exchange: false
-        },
-        {
-            reward: 'reward1',
-            number: 'R0EJUNTK',
-            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
-            exchange: false
-        },
-        {
-            reward: 'reward1',
-            number: 'ZKPOM75B',
-            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
-            exchange: false
-        },
-        {
-            reward: 'reward1',
-            number: 'H26L74TS',
-            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
-            exchange: false
-        },
-        {
-            reward: 'reward1',
-            number: 'QIL5V9BK',
-            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
-            exchange: false
-        },
-        {
-            reward: 'reward1',
-            number: 'KOZVQXIZ',
-            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
-            exchange: false
-        },
-        {
-            reward: 'reward1',
-            number: '0K7YTLAX',
-            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
-            exchange: false
-        },
-        {
-            reward: 'reward4',
-            number: 'YZAV2DNS',
-            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
-            exchange: false
-        },
-        {
-            reward: 'reward5',
-            number: 'QPA5WXLD',
-            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
-            exchange: false
-        },
-        {
-            reward: 'reward5',
-            number: 'TYN4SHZA',
-            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
-            exchange: false
         }
     ]);
     // res.json([]);
@@ -136,8 +70,8 @@ app.post(API.draw.url, async (req, res) => {
     console.log(formData);
     res.status(200);
     res.json({
-        reward: '',
-        status: 'lose'
+        reward: 'reward1',
+        status: 'win'
     });
     // res.status(400);
     // res.end();

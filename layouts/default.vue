@@ -1,7 +1,12 @@
 <template>
-    <div class="app" :class="{ 'is-mobile': isMobile, 'no-intro': noIntro, loaded }">
+    <div class="app" :class="{ 'is-mobile': isMobile }">
         <div class="app__content">
-            <a href="https://vidol.tv/" target="_blank" class="logo fadeIn" />
+            <a
+                href="https://vidol.tv/"
+                target="_blank"
+                class="logo"
+                :class="{ fadeIn: introComplete }"
+            />
             <nuxt />
         </div>
         <VueFooter ref="footer" />
@@ -23,7 +28,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(['noIntro', 'loaded']),
+        ...mapState(['introComplete']),
         isMobile () {
             return this.$device.isMobile;
         }
@@ -87,10 +92,6 @@ body {
     position: relative;
     margin: 0 auto;
     background-color: rgb(50, 70, 245);
-    transition: background-color .2s; // Loader fadeout 0.2s
-    &.loaded {
-        background-color: #fff9eb;
-    }
     &__content {
         padding-bottom: 80px;
         @media (max-width: #{$tablet-width}px) {
@@ -105,6 +106,7 @@ body {
     z-index: 10;
     width: vw(185, $desktop-width);
     background: url('~@/assets/images/logo.png') 0 50% / contain no-repeat;
+    opacity: 0;
     @media (max-width: #{$tablet-width}px) {
         width: vw(128, $tablet-width);
     }
@@ -115,39 +117,8 @@ body {
     }
 }
 .fadeIn {
-    animation: fadeIn .5s 4s both paused;
-    @at-root {
-        .app.no-intro .fadeIn {
-            animation-delay: 0s;
-        }
-        .app.loaded .fadeIn {
-            animation-play-state: running;
-        }
-    }
-}
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-.bounceIn {
-    animation: bounceIn .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both paused;
-    @at-root {
-        .app.loaded .bounceIn {
-            animation-play-state: running;
-        }
-    }
-}
-@keyframes bounceIn {
-    from {
-        transform: scale(0);
-    }
-    to {
-        transform: scale(1);
-    }
+    opacity: 1 !important;
+    transition: opacity .5s;
 }
 .swal2-title {
     @media (max-width: #{$tablet-width}px) {

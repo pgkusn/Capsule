@@ -8,8 +8,7 @@ export const state = () => ({
     history: null,
     drawRange: null,
     drawResult: null,
-    noIntro: false,
-    loaded: false
+    introComplete: false
 });
 
 export const mutations = {
@@ -31,11 +30,8 @@ export const mutations = {
     setDrawResult (state, payload) {
         state.drawResult = payload;
     },
-    setNoIntro (state) {
-        state.noIntro = true;
-    },
-    setLoaded (state) {
-        state.loaded = true;
+    setIntroComplete (state) {
+        state.introComplete = true;
     }
 };
 

@@ -85,12 +85,14 @@ $base-color: #472fff;
 .history {
     position: relative;
     padding: 35px 60px;
+    min-height: 307px;
     border-width: 13px 20px;
     border-style: solid;
     border-color: $base-color;
     background-color: #fff;
     @media (max-width: #{$tablet-width}px) {
         padding: 13px 0 31px;
+        min-height: 223px;
         border-width: 13px;
     }
     > div {
@@ -232,7 +234,7 @@ $base-color: #472fff;
     &__no-list {
         text-align: center;
         letter-spacing: letter-spacing(50);
-        font-size: 25px;
+        font-size: 20px;
         line-height: 1.5;
     }
     &__cube {

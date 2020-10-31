@@ -1,5 +1,5 @@
 <template>
-    <div class="footer fadeIn">
+    <div class="footer" :class="{ fadeIn: introComplete }">
         <div class="container">
             <div class="footer__text">
                 <p>© 2020 Vidol All Rights Reserved</p>
@@ -20,7 +20,7 @@ import { mapState } from 'vuex';
 export default {
     name: 'VueFooter',
     computed: {
-        ...mapState(['noIntro', 'loaded'])
+        ...mapState(['introComplete'])
     },
     methods: {
         lineShare () {
@@ -41,6 +41,7 @@ export default {
     width: 100%;
     background-color: #472fff;
     color: #fff;
+    opacity: 0;
     > .container {
         display: flex;
         height: 80px;
