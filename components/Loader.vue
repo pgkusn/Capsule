@@ -12,7 +12,6 @@
                 stroke="#fff"
                 stroke-width="3"
                 fill="none"
-                transform="rotate(-90)"
                 transform-origin="50% 50%"
             />
         </svg>
@@ -76,6 +75,9 @@ export default {
         transition: stroke-dashoffset .1s;
         stroke-dasharray: 629; // 2*PI*r
         stroke-dashoffset: 629; // 2*PI*r
+    }
+    > svg {
+        transform: rotate(-90deg);
     }
 }
 </style>
