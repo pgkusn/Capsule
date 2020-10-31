@@ -3,7 +3,7 @@
         <div ref="intro" class="intro" />
 
         <main>
-            <div ref="gacha" class="gacha" :class="{ bounceIn: !ignoreOpening, fadeIn: ignoreOpening }" />
+            <div ref="gacha" class="gacha" :class="{ bounceIn: !noIntro, fadeIn: noIntro }" />
 
             <div ref="bg" class="bg fadeIn" />
 
@@ -99,7 +99,7 @@ export default {
             'currentPopup',
             'history',
             'drawRange',
-            'ignoreOpening',
+            'noIntro',
             'loaded'
         ]),
         lottieFiles () {
@@ -117,7 +117,7 @@ export default {
             files = files.concat(gachaFiles, peopleLeftFile, peopleRightFile);
             mbFiles = mbFiles.concat(gachaFiles, peopleLeftMbFile, peopleRightMbFile);
 
-            if (!this.ignoreOpening) {
+            if (!this.noIntro) {
                 files = files.concat(introFiles);
                 mbFiles = mbFiles.concat(introMbFiles);
             }
@@ -167,14 +167,16 @@ export default {
                 this.setLoaded();
             }
 
-            // this.setIgnoreOpening(); // debug
+            // this.setNoIntro(); // debug
 
             // open popup after login
             const currentPopup = localStorage.getItem('returnPopup');
             if (currentPopup) {
-                this.setIgnoreOpening();
+                this.setNoIntro();
+
                 this.initLottie();
                 await this.preloadPopupImg();
+
                 this.setCurrentPopup(currentPopup);
                 localStorage.removeItem('returnPopup');
             }
@@ -188,7 +190,7 @@ export default {
         ...mapMutations([
             'setCurrentPopup',
             'setUserToken',
-            'setIgnoreOpening',
+            'setNoIntro',
             'setLoaded'
         ]),
         ...mapActions([
@@ -245,8 +247,8 @@ export default {
         async initLottie () {
             this.$lottie.destroy();
 
-            // intro
-            if (!this.ignoreOpening) {
+            // init intro
+            if (!this.noIntro) {
                 const introAnim = this.$lottie.loadAnimation({
                     container: this.$refs.intro,
                     renderer: 'svg',
@@ -259,7 +261,7 @@ export default {
                 });
             }
 
-            // bg
+            // init bg
             const bgAnim = this.$lottie.loadAnimation({
                 container: this.$refs.bg,
                 renderer: 'svg',
@@ -271,7 +273,7 @@ export default {
                 this.setSVGAttr(this.$refs.bg.firstChild);
             });
 
-            // gacha
+            // init gacha
             const gachaAnim = this.$lottie.loadAnimation({
                 container: this.$refs.gacha,
                 renderer: 'svg',
@@ -280,7 +282,7 @@ export default {
                 animationData: gachaData
             });
 
-            // peopleLeft
+            // init peopleLeft
             this.$lottie.loadAnimation({
                 container: this.$refs.peopleLeft,
                 renderer: 'svg',
@@ -289,7 +291,7 @@ export default {
                 animationData: this.tabletWidth ? peopleLeftMbData : peopleLeftData
             });
 
-            // peopleRight
+            // init peopleRight
             this.$lottie.loadAnimation({
                 container: this.$refs.peopleRight,
                 renderer: 'svg',
@@ -298,13 +300,13 @@ export default {
                 animationData: this.tabletWidth ? peopleRightMbData : peopleRightData
             });
 
-            // gacha play
-            const delayTime = this.ignoreOpening || this.animPlayed ? 0 : 4000; // 4s: 2.5s gacha animation delay + 1.5s
+            // play gacha
+            const delayTime = this.noIntro || this.animPlayed ? 0 : 4000; // same as fadeIn delay time
             setTimeout(() => {
                 gachaAnim.play();
             }, delayTime);
 
-            // bg play
+            // preload and play bg
             await this.preloadLottieImg(this.bgLottieFiles);
             bgAnim.play();
 
@@ -317,9 +319,11 @@ export default {
             return new Promise((resolve, reject) => {
                 const queue = new createjs.LoadQueue(false);
                 queue.on('complete', () => resolve());
-                queue.on('progress', value => {
-                    this.loadProgress = Math.floor(value.progress * 100);
-                });
+                if (!this.loadProgress) {
+                    queue.on('progress', value => {
+                        this.loadProgress = Math.floor(value.progress * 100);
+                    });
+                }
                 queue.loadManifest(files);
             });
         },

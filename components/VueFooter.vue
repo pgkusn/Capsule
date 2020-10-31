@@ -20,7 +20,7 @@ import { mapState } from 'vuex';
 export default {
     name: 'VueFooter',
     computed: {
-        ...mapState(['ignoreOpening', 'loaded'])
+        ...mapState(['noIntro', 'loaded'])
     },
     methods: {
         lineShare () {

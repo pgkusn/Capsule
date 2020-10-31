@@ -1,5 +1,5 @@
 <template>
-    <div class="app" :class="{ 'is-mobile': isMobile, 'opening': !ignoreOpening, loaded }">
+    <div class="app" :class="{ 'is-mobile': isMobile, 'no-intro': noIntro, loaded }">
         <div class="app__content">
             <a href="https://vidol.tv/" target="_blank" class="logo fadeIn" />
             <nuxt />
@@ -23,7 +23,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(['ignoreOpening', 'loaded']),
+        ...mapState(['noIntro', 'loaded']),
         isMobile () {
             return this.$device.isMobile;
         }
@@ -115,10 +115,10 @@ body {
     }
 }
 .fadeIn {
-    animation: fadeIn .5s both paused;
+    animation: fadeIn .5s 4s both paused;
     @at-root {
-        .app.opening .fadeIn {
-            animation-delay: 4s;
+        .app.no-intro .fadeIn {
+            animation-delay: 0s;
         }
         .app.loaded .fadeIn {
             animation-play-state: running;
@@ -134,14 +134,14 @@ body {
     }
 }
 .bounceIn {
-    animation: popup .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both paused;
+    animation: bounceIn .5s cubic-bezier(.34, 1.56, .64, 1) 2.5s both paused;
     @at-root {
         .app.loaded .bounceIn {
             animation-play-state: running;
         }
     }
 }
-@keyframes popup {
+@keyframes bounceIn {
     from {
         transform: scale(0);
     }
