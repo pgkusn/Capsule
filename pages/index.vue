@@ -56,7 +56,7 @@
         </transition>
 
         <transition name="fade">
-            <Loader v-if="!loaded" :progress="loadProgress" />
+            <Loader v-if="!loaded && !animPlayed" :progress="loadProgress" />
         </transition>
     </div>
 </template>
@@ -133,6 +133,30 @@ export default {
         }
     },
     watch: {
+        async tabletWidth (value) {
+            this.loaded = false;
+            await this.preloadLottieImg(this.lottieFiles);
+            this.loaded = true;
+
+            this.$nextTick(async () => {
+                // open popup after login
+                const currentPopup = localStorage.getItem('returnPopup');
+                if (currentPopup) {
+                    this.setIntroComplete();
+
+                    this.initLottie();
+                    await this.preloadPopupImg();
+
+                    this.setCurrentPopup(currentPopup);
+                    localStorage.removeItem('returnPopup');
+                }
+                else {
+                    // this.setIntroComplete(); // debug
+                    this.initLottie();
+                    this.preloadPopupImg();
+                }
+            });
+        },
         async currentPopup (popupType) {
             if (!popupType) return;
 
@@ -162,36 +186,8 @@ export default {
 
             this.showPopup = true;
         },
-        async tabletWidth (value) {
-            // preload lottie image
-            if (!this.animPlayed) {
-                await this.preloadLottieImg(this.lottieFiles);
-                this.loaded = true;
-            }
-
-            // this.setIntroComplete(); // debug
-
-            this.$nextTick(async () => {
-                // open popup after login
-                const currentPopup = localStorage.getItem('returnPopup');
-                if (currentPopup) {
-                    this.setIntroComplete();
-
-                    this.initLottie();
-                    await this.preloadPopupImg();
-
-                    this.setCurrentPopup(currentPopup);
-                    localStorage.removeItem('returnPopup');
-                }
-                else {
-                    this.initLottie();
-                    this.preloadPopupImg();
-                }
-            });
-        },
         introComplete () {
             gachaAnim.play();
-
             if (bgAnim) {
                 this.bgAnimPlay();
             }
@@ -262,7 +258,7 @@ export default {
                 container: this.$refs.gacha,
                 renderer: 'svg',
                 loop: true,
-                autoplay: false,
+                autoplay: this.introComplete,
                 animationData: gachaData
             });
             if (this.tabletWidth) {
@@ -329,7 +325,12 @@ export default {
         },
         async bgAnimPlay () {
             await this.preloadLottieImg(this.bgLottieFiles);
-            bgAnim.play();
+            if (this.currentPopup) {
+                bgAnim.goToAndPlay(50, true);
+            }
+            else {
+                bgAnim.play();
+            }
         },
         preloadLottieImg (files) {
             return new Promise((resolve, reject) => {
