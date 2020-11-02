@@ -24,14 +24,26 @@ app.post(API.history.url, async (req, res) => {
             exchange: false
         },
         {
-            reward: 'reward1',
+            reward: 'reward2',
             number: 'KLIRSSDJ',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: true
+        },
+        {
+            reward: 'reward3',
+            number: 'ZWHZTSLM',
+            url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
+            exchange: true
+        },
+        {
+            reward: 'reward4',
+            number: '6LEJMDUI',
             url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
             exchange: false
         },
         {
-            reward: 'reward1',
-            number: 'ZWHZTSLM',
+            reward: 'reward5',
+            number: '4VMIQEER',
             url: 'https://vidol.tv/payments/dmlkb2xfMTA0Mw==',
             exchange: false
         }

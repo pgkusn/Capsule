@@ -13,6 +13,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
+import _random from 'lodash/random';
 import Loading from '@/components/Loading.vue';
 
 export default {
@@ -42,6 +43,14 @@ export default {
                 return this.drawResult.status;
             }
             return '';
+        },
+        programURL () {
+            const URL = [
+                'https://vidol.tv/programmes/1268',
+                'https://vidol.tv/programmes/1267',
+                'https://vidol.tv/programmes/1126'
+            ];
+            return URL[_random(2)];
         }
     },
     methods: {
@@ -54,10 +63,10 @@ export default {
                 this.setCurrentPopup('History');
             }
             else if (this.drawResult.status === 'normal') {
-                window.open('https://導方案頁');
+                window.open(this.$config.PAY_URL);
             }
             else if (this.drawResult.status === 'lose') {
-                window.open('https://導觀看連結');
+                window.open(this.programURL);
             }
         }
     }
