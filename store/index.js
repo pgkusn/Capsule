@@ -8,7 +8,8 @@ export const state = () => ({
     history: null,
     drawRange: null,
     drawResult: null,
-    introComplete: false
+    introComplete: false,
+    memberID: ''
 });
 
 export const mutations = {
@@ -32,15 +33,21 @@ export const mutations = {
     },
     setIntroComplete (state) {
         state.introComplete = true;
+    },
+    setMemberID (state, payload) {
+        state.memberID = payload;
     }
 };
 
 export const actions = {
     async getHistory ({ commit }) {
         commit('setHistory', null);
+        const form = new FormData();
+        form.append('_user_token', this._vm.$Cookies.get('_user_token'));
         const { data } = await this.$axios({
             method: API.history.method,
-            url: API.history.url
+            url: API.history.url,
+            data: form
         });
         commit('setHistory', data);
     },
@@ -75,5 +82,15 @@ export const actions = {
             data: form
         });
         commit('setDrawResult', data);
+    },
+    async getMemberID ({ commit }) {
+        const form = new FormData();
+        form.append('_user_token', this._vm.$Cookies.get('_user_token'));
+        const { data } = await this.$axios({
+            method: API.memberID.method,
+            url: API.memberID.url,
+            data: form
+        });
+        commit('setMemberID', data);
     }
 };

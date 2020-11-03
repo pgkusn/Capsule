@@ -170,7 +170,7 @@ export default {
 
             if (popupType === 'History') {
                 // 查詢中獎紀錄
-                await this.getHistory();
+                await Promise.all([this.getHistory(), this.getMemberID()]);
             }
             else if (popupType === 'Draw') {
                 // 抽獎
@@ -203,7 +203,8 @@ export default {
             'getHistory',
             'getDrawRange',
             'share',
-            'draw'
+            'draw',
+            'getMemberID'
         ]),
         checkLogin () {
             return new Promise((resolve, reject) => {

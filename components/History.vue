@@ -4,8 +4,8 @@
             <hgroup class="history__title">
                 <h1><img src="@/assets/images/title.png" alt="1111 驚喜扭扭樂"></h1>
                 <h2><img src="@/assets/images/history-subtitle.png" alt="我的中獎紀錄"></h2>
-                <h3 v-if="history.length">
-                    會員ＩＤ（帶入登錄ＩＤ）
+                <h3 v-if="memberID">
+                    會員 ID {{ memberID }}
                 </h3>
             </hgroup>
             <table v-if="history.length" class="history__list">
@@ -61,7 +61,7 @@ export default {
         Loading
     },
     computed: {
-        ...mapState(['history'])
+        ...mapState(['history', 'memberID'])
     },
     methods: {
         getRewardName (value) {
