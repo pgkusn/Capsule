@@ -236,7 +236,7 @@ export default {
         },
         redirectToLogin () {
             // 模擬登入
-            if (location.hostname === 'localhost') {
+            if (location.hostname === 'localhost' || this.$config.ENV === 'demo') {
                 this.$Cookies.set('_user_token', this.$config.USER_TOKEN, { expires: 1 });
                 setTimeout(() => {
                     location.reload();

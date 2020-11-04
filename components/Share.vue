@@ -76,7 +76,7 @@ export default {
             })(document, 'script', 'facebook-jssdk');
         },
         fbShare () {
-            if (location.hostname === 'localhost') {
+            if (location.hostname === 'localhost' || this.$config.ENV === 'demo') {
                 this.userID = '666';
                 console.log('已分享');
                 return;
