@@ -13,8 +13,12 @@ app.use(express.urlencoded({ extended: false })); // 接收 form urlencoded 的�
 
 const upload = multer();
 
-app.post(API.history.url, async (req, res) => {
+app.post(API.history.url, upload.array(), async (req, res) => {
     await sleep(500);
+
+    const formData = req.body;
+    console.log(formData);
+
     res.status(200);
     res.json([
         {
@@ -54,10 +58,12 @@ app.post(API.history.url, async (req, res) => {
     // res.end();
 });
 
-app.post(API.drawRange.url, async (req, res) => {
+app.post(API.drawRange.url, upload.array(), async (req, res) => {
     await sleep(500);
+
     const formData = req.body;
     console.log(formData);
+
     res.status(200);
     res.json({
         draw: false,
@@ -69,30 +75,43 @@ app.post(API.drawRange.url, async (req, res) => {
 
 app.post(API.share.url, upload.array(), async (req, res) => {
     await sleep(500);
+
     const formData = req.body;
     console.log(formData);
+
     res.status(200);
     // res.status(400);
     res.end();
 });
 
-app.post(API.draw.url, async (req, res) => {
+app.post(API.draw.url, upload.array(), async (req, res) => {
     await sleep(500);
+
     const formData = req.body;
     console.log(formData);
+
     res.status(200);
+    const status = ['win', 'normal', 'lose'];
+    const statusIdx = Math.floor(Math.random() * status.length);
+    let reward = '';
+    if (statusIdx === 0) {
+        const rewardNum = Math.floor(Math.random() * (5 - 1 + 1)) + 1;
+        reward = `reward${rewardNum}`;
+    }
     res.json({
-        reward: 'reward1',
-        status: 'win'
+        reward,
+        status: status[statusIdx]
     });
     // res.status(400);
     // res.end();
 });
 
-app.post(API.memberID.url, async (req, res) => {
+app.post(API.memberID.url, upload.array(), async (req, res) => {
     await sleep(500);
+
     const formData = req.body;
     console.log(formData);
+
     res.status(200);
     res.send('Tuy0bS');
     // res.status(400);

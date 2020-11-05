@@ -55,7 +55,7 @@ export default {
         fbInit () {
             window.fbAsyncInit = () => {
                 FB.init({
-                    appId: location.hostname === 'localhost' ? '512477409242587' : '1044817312247946',
+                    appId: (location.hostname === 'localhost' || this.$config.ENV === 'demo') ? '512477409242587' : '1044817312247946',
                     autoLogAppEvents: true,
                     xfbml: true,
                     version: 'v2.10',
@@ -76,7 +76,7 @@ export default {
             })(document, 'script', 'facebook-jssdk');
         },
         fbShare () {
-            if (location.hostname === 'localhost' || this.$config.ENV === 'demo') {
+            if (location.hostname === 'localhost') {
                 this.userID = '666';
                 console.log('已分享');
                 return;
