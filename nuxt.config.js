@@ -1,4 +1,6 @@
 const env = require('dotenv').config({ path: '.env.' + process.env.NODE_ENV }).parsed;
+const fs = require('fs');
+const path = require('path');
 
 const title = '1111驚喜扭扭樂│Vidol TV';
 const description = '進行扭蛋扭扭樂，獲得雙11優惠';
@@ -96,7 +98,11 @@ export default {
         base: new URL(env.WEB_URL).pathname
     },
     server: {
-        host: '0.0.0.0'
+        host: '0.0.0.0',
+        https: {
+            key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
+            cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
+        }
     },
     publicRuntimeConfig: {
         ENV: process.env.ENV,
