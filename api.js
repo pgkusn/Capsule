@@ -14,10 +14,6 @@ const API = {
     draw: {
         method: 'post',
         url: '/v1/Quadruple1/draw'
-    },
-    memberID: {
-        method: 'post',
-        url: '/v1/Quadruple1/member'
     }
 };
 module.exports = API;

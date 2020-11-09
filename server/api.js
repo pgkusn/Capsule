@@ -66,7 +66,7 @@ app.post(API.drawRange.url, upload.array(), async (req, res) => {
 
     res.status(200);
     res.json({
-        draw: false,
+        draw: true,
         share: false
     });
     // res.status(400);
@@ -102,18 +102,6 @@ app.post(API.draw.url, upload.array(), async (req, res) => {
         reward,
         status: status[statusIdx]
     });
-    // res.status(400);
-    // res.end();
-});
-
-app.post(API.memberID.url, upload.array(), async (req, res) => {
-    await sleep(500);
-
-    const formData = req.body;
-    console.log(formData);
-
-    res.status(200);
-    res.send('Tuy0bS');
     // res.status(400);
     // res.end();
 });

@@ -46,6 +46,10 @@ export default {
             {
                 src: 'js/preloadjs.min.js',
                 defer: 'defer'
+            },
+            {
+                src: 'https://connect.facebook.net/en_US/sdk.js',
+                defer: 'defer'
             }
         ]
     },

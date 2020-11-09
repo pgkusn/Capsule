@@ -4,12 +4,12 @@ export const state = () => ({
     tabletWidth: null,
     mobileWidth: null,
     currentPopup: null,
-    userToken: '',
+    userID: '',
+    username: '',
     history: null,
     drawRange: null,
     drawResult: null,
-    introComplete: false,
-    memberID: ''
+    introComplete: false
 });
 
 export const mutations = {
@@ -19,8 +19,11 @@ export const mutations = {
     setCurrentPopup (state, payload) {
         state.currentPopup = payload;
     },
-    setUserToken (state, payload) {
-        state.userToken = payload;
+    setUserID (state, payload) {
+        state.userID = payload;
+    },
+    setUsername (state, payload) {
+        state.username = payload;
     },
     setHistory (state, payload) {
         state.history = payload;
@@ -33,17 +36,14 @@ export const mutations = {
     },
     setIntroComplete (state) {
         state.introComplete = true;
-    },
-    setMemberID (state, payload) {
-        state.memberID = payload;
     }
 };
 
 export const actions = {
-    async getHistory ({ commit }) {
+    async getHistory ({ state, commit }) {
         commit('setHistory', null);
         const form = new FormData();
-        form.append('_user_token', this._vm.$Cookies.get('_user_token'));
+        form.append('userID', state.userID);
         const { data } = await this.$axios({
             method: API.history.method,
             url: API.history.url,
@@ -51,10 +51,10 @@ export const actions = {
         });
         commit('setHistory', data);
     },
-    async getDrawRange ({ commit }) {
+    async getDrawRange ({ state, commit }) {
         commit('setDrawRange', null);
         const form = new FormData();
-        form.append('_user_token', this._vm.$Cookies.get('_user_token'));
+        form.append('userID', state.userID);
         const { data } = await this.$axios({
             method: API.drawRange.method,
             url: API.drawRange.url,
@@ -62,35 +62,24 @@ export const actions = {
         });
         commit('setDrawRange', data);
     },
-    async share (context, payload) {
+    async share ({ state }) {
         const form = new FormData();
-        form.append('fb', payload);
-        form.append('_user_token', this._vm.$Cookies.get('_user_token'));
+        form.append('userID', state.userID);
         await this.$axios({
             method: API.share.method,
             url: API.share.url,
             data: form
         });
     },
-    async draw ({ commit }) {
+    async draw ({ state, commit }) {
         commit('setDrawResult', null);
         const form = new FormData();
-        form.append('_user_token', this._vm.$Cookies.get('_user_token'));
+        form.append('userID', state.userID);
         const { data } = await this.$axios({
             method: API.draw.method,
             url: API.draw.url,
             data: form
         });
         commit('setDrawResult', data);
-    },
-    async getMemberID ({ commit }) {
-        const form = new FormData();
-        form.append('_user_token', this._vm.$Cookies.get('_user_token'));
-        const { data } = await this.$axios({
-            method: API.memberID.method,
-            url: API.memberID.url,
-            data: form
-        });
-        commit('setMemberID', data);
     }
 };

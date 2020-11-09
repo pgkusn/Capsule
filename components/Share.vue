@@ -21,11 +21,6 @@ export default {
     components: {
         Loading
     },
-    data () {
-        return {
-            userID: ''
-        };
-    },
     computed: {
         ...mapState(['tabletWidth', 'drawRange']),
         popupClass () {
@@ -35,52 +30,10 @@ export default {
             return this.popupClass ? this.tabletWidth ? `${this.popupClass}-s` : this.popupClass : '';
         }
     },
-    watch: {
-        async userID (value) {
-            if (!this.drawRange.draw) {
-                this.setCurrentPopup('Draw');
-            }
-            else if (!this.drawRange.share) {
-                await this.share(value);
-                this.setCurrentPopup('Draw');
-            }
-        }
-    },
-    mounted () {
-        this.fbInit();
-    },
     methods: {
         ...mapMutations(['setCurrentPopup']),
         ...mapActions(['share']),
-        fbInit () {
-            window.fbAsyncInit = () => {
-                FB.init({
-                    appId: (location.hostname === 'localhost' || this.$config.ENV === 'demo') ? '512477409242587' : '1044817312247946',
-                    autoLogAppEvents: true,
-                    xfbml: true,
-                    version: 'v2.10',
-                    oauth: true
-                });
-                FB.AppEvents.logPageView();
-            };
-            (function (d, s, id) {
-                var js;
-                var fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) {
-                    return;
-                }
-                js = d.createElement(s);
-                js.id = id;
-                js.src = '//connect.facebook.net/en_US/sdk.js';
-                fjs.parentNode.insertBefore(js, fjs);
-            })(document, 'script', 'facebook-jssdk');
-        },
         fbShare () {
-            if (location.hostname === 'localhost') {
-                this.userID = '666';
-                console.log('已分享');
-                return;
-            }
             FB.ui(
                 {
                     method: 'share',
@@ -89,7 +42,7 @@ export default {
                 },
                 res => {
                     if (res && !res.error_message) {
-                        this.setUserID();
+                        this.shareSuccessCallback();
                     }
                     else {
                         console.log('Error while posting.');
@@ -97,17 +50,14 @@ export default {
                 }
             );
         },
-        setUserID () {
-            FB.getLoginStatus(res => {
-                if (res.status !== 'connected') {
-                    FB.login(res => {
-                        this.userID = res.authResponse.userID;
-                    });
-                }
-                else {
-                    this.userID = res.authResponse.userID;
-                }
-            });
+        async shareSuccessCallback () {
+            if (!this.drawRange.draw) {
+                this.setCurrentPopup('Draw');
+            }
+            else if (!this.drawRange.share) {
+                await this.share();
+                this.setCurrentPopup('Draw');
+            }
         }
     }
 };

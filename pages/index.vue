@@ -62,6 +62,7 @@
 </template>
 
 <script>
+/* eslint-disable no-undef */
 import { mapState, mapMutations, mapActions } from 'vuex';
 import Warning from '@/components/Warning.vue';
 import Popup from '@/components/Popup.vue';
@@ -139,22 +140,9 @@ export default {
             this.loaded = true;
 
             this.$nextTick(async () => {
-                // open popup after login
-                const currentPopup = localStorage.getItem('returnPopup');
-                if (currentPopup) {
-                    this.setIntroComplete();
-
-                    this.initLottie();
-                    await this.preloadPopupImg();
-
-                    this.setCurrentPopup(currentPopup);
-                    localStorage.removeItem('returnPopup');
-                }
-                else {
-                    // this.setIntroComplete(); // debug
-                    this.initLottie();
-                    this.preloadPopupImg();
-                }
+                // this.setIntroComplete(); // debug
+                this.initLottie();
+                this.preloadPopupImg();
             });
         },
         async currentPopup (popupType) {
@@ -170,7 +158,7 @@ export default {
 
             if (popupType === 'History') {
                 // 查詢中獎紀錄
-                await Promise.all([this.getHistory(), this.getMemberID()]);
+                await this.getHistory();
             }
             else if (popupType === 'Draw') {
                 // 抽獎
@@ -193,63 +181,53 @@ export default {
             }
         }
     },
+    mounted () {
+        this.fbInit();
+    },
     methods: {
         ...mapMutations([
             'setCurrentPopup',
-            'setUserToken',
-            'setIntroComplete'
+            'setUserID',
+            'setIntroComplete',
+            'setUsername'
         ]),
         ...mapActions([
             'getHistory',
             'getDrawRange',
             'share',
-            'draw',
-            'getMemberID'
+            'draw'
         ]),
-        checkLogin () {
-            return new Promise((resolve, reject) => {
-                const userToken = this.$Cookies.get('_user_token');
-                if (!userToken) {
-                    // 將 currentPopup 設成 null (為了下次可觸發 watch) 前先存入 localStorage
-                    localStorage.setItem('returnPopup', this.currentPopup);
-                    this.showPopup = false;
-                    this.setCurrentPopup(null);
-
-                    this.$swal({
-                        icon: 'info',
-                        title: '請先登入 Vidol 會員',
-                        confirmButtonText: '立即登入',
-                        heightAuto: false
-                    }).then(result => {
-                        if (result.isConfirmed) {
-                            this.redirectToLogin();
-                        }
-                        else {
-                            localStorage.removeItem('returnPopup', this.currentPopup);
-                        }
-                    });
-                    return;
-                }
-                this.setUserToken(userToken);
-                resolve();
+        fbInit () {
+            FB.init({
+                appId: (location.hostname === 'localhost' || this.$config.ENV === 'demo') ? '512477409242587' : '1044817312247946',
+                version: 'v2.10'
             });
         },
-        redirectToLogin () {
-            // 模擬登入
-            if (location.hostname === 'localhost' || this.$config.ENV === 'demo') {
-                this.$Cookies.set('_user_token', this.$config.USER_TOKEN, { expires: 1 });
-                setTimeout(() => {
-                    location.reload();
-                }, 500);
-                return;
-            }
-
-            this.$Cookies.set('user_signed_in_redirect_to', location.origin + location.pathname, { domain: 'vidol.tv' });
-            const redirectUrl = {
-                sit: 'https://webtest.vidol.tv/login',
-                prod: 'https://vidol.tv/login'
-            };
-            location.href = redirectUrl[this.$config.ENV];
+        checkLogin () {
+            return new Promise((resolve, reject) => {
+                FB.getLoginStatus(res => {
+                    if (res.status !== 'connected') {
+                        const returnPopup = this.currentPopup;
+                        this.showPopup = false;
+                        this.setCurrentPopup(null);
+                        FB.login(res => {
+                            if (res.status === 'connected') {
+                                this.setCurrentPopup(returnPopup);
+                            }
+                        });
+                    }
+                    else {
+                        this.setUserID(res.authResponse.userID);
+                        this.getUsername();
+                        resolve();
+                    }
+                });
+            });
+        },
+        getUsername () {
+            FB.api('/me', 'GET', { fields: 'name' }, res => {
+                this.setUsername(res.name);
+            });
         },
         initLottie () {
             this.$lottie.destroy();
