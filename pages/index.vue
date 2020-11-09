@@ -199,7 +199,7 @@ export default {
         ]),
         fbInit () {
             FB.init({
-                appId: (location.hostname === 'localhost' || this.$config.ENV === 'demo') ? '512477409242587' : '1044817312247946',
+                appId: '512477409242587',
                 version: 'v2.10'
             });
         },
