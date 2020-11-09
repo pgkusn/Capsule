@@ -53,27 +53,10 @@ export default {
         ...mapMutations(['setCurrentPopup']),
         ...mapActions(['share']),
         fbInit () {
-            window.fbAsyncInit = () => {
-                FB.init({
-                    appId: (location.hostname === 'localhost' || this.$config.ENV === 'demo') ? '512477409242587' : '1044817312247946',
-                    autoLogAppEvents: true,
-                    xfbml: true,
-                    version: 'v2.10',
-                    oauth: true
-                });
-                FB.AppEvents.logPageView();
-            };
-            (function (d, s, id) {
-                var js;
-                var fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) {
-                    return;
-                }
-                js = d.createElement(s);
-                js.id = id;
-                js.src = '//connect.facebook.net/en_US/sdk.js';
-                fjs.parentNode.insertBefore(js, fjs);
-            })(document, 'script', 'facebook-jssdk');
+            FB.init({
+                appId: (location.hostname === 'localhost' || this.$config.ENV === 'demo') ? '512477409242587' : '1044817312247946',
+                version: 'v2.10'
+            });
         },
         fbShare () {
             if (location.hostname === 'localhost') {
