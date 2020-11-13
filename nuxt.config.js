@@ -111,7 +111,6 @@ export default {
     publicRuntimeConfig: {
         ENV: process.env.ENV,
         API_URL: process.env.API_URL,
-        PAY_URL: process.env.PAY_URL,
-        USER_TOKEN: process.env.USER_TOKEN
+        PAY_URL: process.env.PAY_URL
     }
 };
