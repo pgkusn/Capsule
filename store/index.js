@@ -42,43 +42,35 @@ export const mutations = {
 export const actions = {
     async getHistory ({ state, commit }) {
         commit('setHistory', null);
-        const form = new FormData();
-        form.append('userID', state.userID);
         const { data } = await this.$axios({
             method: API.history.method,
             url: API.history.url,
-            data: form
+            data: { userID: state.userID }
         });
         commit('setHistory', data);
     },
     async getDrawRange ({ state, commit }) {
         commit('setDrawRange', null);
-        const form = new FormData();
-        form.append('userID', state.userID);
         const { data } = await this.$axios({
             method: API.drawRange.method,
             url: API.drawRange.url,
-            data: form
+            data: { userID: state.userID }
         });
         commit('setDrawRange', data);
     },
     async share ({ state }) {
-        const form = new FormData();
-        form.append('userID', state.userID);
         await this.$axios({
             method: API.share.method,
             url: API.share.url,
-            data: form
+            data: { userID: state.userID }
         });
     },
     async draw ({ state, commit }) {
         commit('setDrawResult', null);
-        const form = new FormData();
-        form.append('userID', state.userID);
         const { data } = await this.$axios({
             method: API.draw.method,
             url: API.draw.url,
-            data: form
+            data: { userID: state.userID }
         });
         commit('setDrawResult', data);
     }

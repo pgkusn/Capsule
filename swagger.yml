@@ -1,0 +1,149 @@
+swagger: "2.0"
+info:
+  title: Capsule
+  version: "1.0"
+host: kenge-mock-api.herokuapp.com
+basePath: /
+schemes:
+  - https
+tags:
+  - name: 讀取接口
+    description: 定義讀取資料 API
+  - name: 寫入接口
+    description: 定義寫入資料 API
+paths:
+  /v1/Quadruple1/history:
+    post:
+      tags:
+        - 讀取接口
+      summary: 取得獲獎紀錄
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: userID
+          description: 使用者 ID
+          required: true
+          schema:
+            $ref: "#/definitions/userID"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/History"
+        400:
+          description: Error
+  /v1/Quadruple1/drawRange:
+    post:
+      tags:
+        - 讀取接口
+      summary: 取得可抽獎狀態
+      consumes:
+        - "application/json"
+      parameters:
+        - in: body
+          name: userID
+          description: 使用者 ID
+          required: true
+          schema:
+            $ref: "#/definitions/userID"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/drawRange"
+        400:
+          description: Error
+  /v1/Quadruple1/share:
+    post:
+      tags:
+        - 寫入接口
+      summary: 分享成功
+      consumes:
+        - "application/json"
+      parameters:
+        - in: body
+          name: userID
+          description: 使用者 ID
+          required: true
+          schema:
+            $ref: "#/definitions/userID"
+      responses:
+        200:
+          description: Success
+        400:
+          description: Error
+  /v1/Quadruple1/draw:
+    post:
+      tags:
+        - 寫入接口
+      summary: 抽獎程式
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: userID
+          description: 使用者 ID
+          required: true
+          schema:
+            $ref: "#/definitions/userID"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/draw"
+        400:
+          description: Error
+definitions:
+  History:
+    description: 獲獎紀錄
+    type: array
+    items:
+      $ref: "#/definitions/HistoryItem"
+  HistoryItem:
+    description: 單次獲獎紀錄
+    type: object
+    properties:
+      reward:
+        type: string
+        description: 獎項代號
+      number:
+        type: string
+        description: 獎項序號
+      exchange:
+        type: boolean
+        description: 是否已兌換
+      url:
+        type: string
+        description: 兌換連結
+  drawRange:
+    description: 可抽獎狀態
+    type: object
+    properties:
+      share:
+        type: boolean
+        description: false (未分享) / true (已分享)
+      draw:
+        type: boolean
+        description: false (未抽獎) / true (已抽獎1次以上)
+  draw:
+    description: 抽獎程式
+    type: object
+    properties:
+      reward:
+        type: string
+        description: 獎項代號 (status 為 normal 及 lose 此欄空白)
+      status:
+        type: string
+        description: win (得獎) / normal (促銷方案) / lose (銘謝惠顧)
+  userID:
+    description: 使用者 ID
+    type: object
+    properties: 
+      userID:
+        type: string
+        description: 使用者 ID
