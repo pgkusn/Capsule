@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   title: Capsule
   version: "1.0"
-host: kenge-mock-api.herokuapp.com
+host: mock-api-pearl.vercel.app
 basePath: /
 schemes:
   - https
