@@ -4,7 +4,7 @@ export const state = () => ({
     tabletWidth: null,
     mobileWidth: null,
     currentPopup: null,
-    userID: '',
+    userID: Date.now(),
     username: '',
     history: null,
     drawRange: null,

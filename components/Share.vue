@@ -34,21 +34,30 @@ export default {
         ...mapMutations(['setCurrentPopup']),
         ...mapActions(['share']),
         fbShare () {
-            FB.ui(
-                {
-                    method: 'share',
-                    display: 'popup',
-                    href: location.hostname === 'localhost' ? 'https://vidol.tv/' : location.href
-                },
-                res => {
-                    if (res && !res.error_message) {
-                        this.shareSuccessCallback();
-                    }
-                    else {
-                        console.log('Error while posting.');
-                    }
-                }
-            );
+            // FIXME: 開啟 popup 會立即執行 callback，且回傳空字串
+            // issue: https://developers.facebook.com/community/threads/907002240903070/
+            // FB.ui(
+            //     {
+            //         method: 'share',
+            //         display: 'popup',
+            //         href: 'https://pgkusn.github.io/Capsule/'
+            //     },
+            //     res => {
+            //         if (res && !res.error_message) {
+            //             this.shareSuccessCallback();
+            //         }
+            //         else {
+            //             console.log('Error while posting.');
+            //         }
+            //     }
+            // );
+
+            // 分享 issue 的替代方案
+            window.open(`https://www.facebook.com/dialog/share?
+                app_id=512477409242587
+                &href=https://pgkusn.github.io/Capsule/`, '_blank')
+
+            this.shareSuccessCallback();
         },
         async shareSuccessCallback () {
             if (!this.drawRange.draw) {

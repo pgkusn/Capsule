@@ -154,7 +154,8 @@ export default {
                 return;
             }
 
-            await this.checkLogin();
+            // 因 FB 改版後登入功能需商家驗證，故改在 store 生成隨機 userID 的方式實作
+            // await this.checkLogin();
 
             if (popupType === 'History') {
                 // 查詢中獎紀錄
