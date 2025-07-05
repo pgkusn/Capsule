@@ -1,19 +1,19 @@
 const API = {
     history: {
         method: 'post',
-        url: '/v1/Quadruple1/history'
+        url: '/capsule/history'
     },
     drawRange: {
         method: 'post',
-        url: '/v1/Quadruple1/drawRange'
+        url: '/capsule/drawRange'
     },
     share: {
         method: 'post',
-        url: '/v1/Quadruple1/share'
+        url: '/capsule/share'
     },
     draw: {
         method: 'post',
-        url: '/v1/Quadruple1/draw'
+        url: '/capsule/draw'
     }
 };
 module.exports = API;
